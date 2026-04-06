@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* ─── Deep Black Foundation ─── */
+  --color-background: #0B0F14;
+  --color-foreground: #F3F4F6;
+  
+  --color-card: #11161D;
+  --color-card-hover: #161D26;
+  --color-card-border: #1A222C;
+  --color-divider: #1A222C;
+  
+  /* Surface layers — flat, no glow */
+  --color-surface-elevated: #151B24;
+  --color-surface-sunken: #0B0F14;
+  
+  /* AI accent — pure, minimal */
+  --color-ai-primary: #8B5CF6;
+  --color-ai-secondary: #A78BFA;
+  --color-ai-subtle: rgba(139, 92, 246, 0.08);
+  
+  /* Functional — strict institutional */
+  --color-bullish: #22C55E;
+  --color-bullish-bg: rgba(34, 197, 94, 0.06);
+  --color-bearish: #EF4444;
+  --color-bearish-bg: rgba(239, 68, 68, 0.06);
+  --color-neutral: #6B7280;
+  --color-neutral-bg: rgba(107, 114, 128, 0.06);
+  --color-caution: #F59E0B;
+  
+  /* Text hierarchy — strict contrast, institutional readability */
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #9CA3AF;
+  --color-text-tertiary: #6B7280;
+  --color-text-muted: #4B5563;
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --background: #0B0F14;
+  --foreground: #F9FAFB;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Panel system: flat, sharp, no glow, no blur ─── */
+.fintech-panel {
+  background: var(--color-card);
+  border: 1px solid var(--color-card-border);
+  box-shadow: none;
+}
+
+/* ─── Tabular numbers for all data ─── */
+.data-value {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+/* ─── Scrollbar: thin, dark, institutional ─── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Thin visible scrollbar variant for content areas */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-card-border);
+  border-radius: 2px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ─── Override ring colors ─── */
+* {
+  --tw-ring-color: var(--color-card-border);
+}
+
+/* ─── Input normalization — flat, no OS chrome ─── */
+input[type="number"],
+input[type="text"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ─── Range slider — institutional accent ─── */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: var(--color-divider);
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  background: var(--color-ai-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1.5px solid var(--color-background);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  background: var(--color-ai-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1.5px solid var(--color-background);
+}
+
+/* ─── Selection color ─── */
+::selection {
+  background: rgba(139, 92, 246, 0.25);
+  color: var(--color-text-primary);
+}
