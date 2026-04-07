@@ -58,25 +58,48 @@ Rules:
 Data:
 ${JSON.stringify(payload)}
 `;
-    } else if (type === "trade-setup") {
+    } else if (type === "trade-setup" || type === "trade-plan") {
       prompt = `
-Return ONLY JSON:
+Return ONLY valid JSON.
+Do NOT include markdown.
+Do NOT include explanations outside JSON.
 
 {
-  "setup": "Buy or Sell with asset name",
-  "entry": "specific level or zone",
-  "stop_loss": "clear invalidation",
-  "take_profit": "target level",
-  "risk_reward": "ratio",
-  "confidence": "low | medium | high",
-  "reasoning": "short but sharp explanation referencing market structure, macro, or sentiment"
+  "primary": {
+    "direction": "buy | sell",
+    "entry": "...",
+    "stop_loss": "...",
+    "take_profit": "...",
+    "confidence": "low | medium | high",
+    "reasoning": "..."
+  },
+  "alternate": {
+    "direction": "buy | sell",
+    "entry": "...",
+    "stop_loss": "...",
+    "take_profit": "...",
+    "confidence": "low | medium | high",
+    "reasoning": "..."
+  },
+  "breakdown": {
+    "direction": "buy | sell",
+    "entry": "...",
+    "stop_loss": "...",
+    "take_profit": "...",
+    "confidence": "low | medium | high",
+    "reasoning": "..."
+  },
+  "key_levels": {
+    "resistance": ["...", "..."],
+    "support": ["...", "..."],
+    "liquidity": ["...", "..."]
+  }
 }
 
 Rules:
 - Be decisive
-- No vague wording
-- Must sound like a professional trader
-- Focus on ONE high-quality setup
+- Use real trading logic (structure, liquidity, momentum)
+- Avoid generic statements
 
 Data:
 ${JSON.stringify(payload)}
@@ -137,30 +160,63 @@ ${JSON.stringify(payload)}
     const raw =
       data?.result?.response ||
       data?.result?.output_text ||
-      JSON.stringify(data);
+      "";
 
     console.log("RAW AI RESPONSE:", raw);
 
     let parsed;
 
     try {
-      // Strip tick wrappers if model outputs rogue markdown blocks before parsing
-      const cleanRaw = raw.replace(/(^```json)|(^```)|(```$)/gm, "").trim();
-      parsed = JSON.parse(cleanRaw);
+      let cleaned = raw
+        .replace(/```json/gi, "")
+        .replace(/```/g, "")
+        .trim();
+      
+      parsed = JSON.parse(cleaned);
+
+      if (type === "trade-setup" || type === "trade-plan") {
+        if (parsed.primary) {
+          parsed = {
+            primary: parsed.primary,
+            alternate: parsed.alternate || null,
+            breakdown: parsed.breakdown || null,
+            key_levels: parsed.key_levels || { resistance: [], support: [], liquidity: [] }
+          };
+        } else {
+          parsed = {
+            primary: parsed,
+            alternate: null,
+            breakdown: null,
+            key_levels: { resistance: [], support: [], liquidity: [] }
+          };
+        }
+      }
     } catch (e) {
-      parsed = {
-        summary: raw || "No response",
-        sentiment: "neutral",
-        impact: "low",
-        affected_assets: [],
-        trade_bias: "wait",
-        confidence: "low",
-        explanation: "Fallback used"
-      };
+      console.error("PARSE FAILED:", raw);
+
+      if (type === "trade-setup" || type === "trade-plan") {
+        parsed = {
+          primary: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: raw || "Fallback used due to AI failure" },
+          alternate: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: "Fallback used" },
+          breakdown: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: "Fallback used" },
+          key_levels: { resistance: [], support: [], liquidity: [] }
+        };
+      } else {
+        parsed = {
+          summary: raw || "No response",
+          sentiment: "neutral",
+          impact: "low",
+          affected_assets: [],
+          trade_bias: "wait",
+          confidence: "low",
+          explanation: "Fallback used"
+        };
+      }
     }
 
     return NextResponse.json(parsed);
   } catch (error) {
+    console.error("AI WORKER ERROR:", error);
     return NextResponse.json({
       summary: "AI failed",
       sentiment: "neutral",
@@ -168,7 +224,8 @@ ${JSON.stringify(payload)}
       affected_assets: [],
       trade_bias: "wait",
       confidence: "low",
-      explanation: "API error fallback"
+      explanation: "API error fallback",
+      primary: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: "Fallback used" }
     });
   }
 }

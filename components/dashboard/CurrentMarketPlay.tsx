@@ -53,9 +53,21 @@ export default function CurrentMarketPlay() {
 
         const data = await res.json();
         
-        if (active && data && data.setup) {
-          setPlay(data);
-          localStorage.setItem("axiom_current_play", JSON.stringify({ data, timestamp: Date.now() }));
+        const playData = data?.primary || data;
+        
+        if (active && playData) {
+          const normalizedPlay: TradePlay = {
+            setup: playData.setup || (playData.direction ? `Direction: ${playData.direction}` : "No setup"),
+            entry: playData.entry || "-",
+            stop_loss: playData.stop_loss || "-",
+            take_profit: playData.take_profit || "-",
+            risk_reward: playData.risk_reward || "-",
+            confidence: playData.confidence || "low",
+            reasoning: playData.reasoning || "No reasoning"
+          };
+          
+          setPlay(normalizedPlay);
+          localStorage.setItem("axiom_current_play", JSON.stringify({ data: normalizedPlay, timestamp: Date.now() }));
         }
       } catch (error) {
         console.error("Failed to load market play", error);
