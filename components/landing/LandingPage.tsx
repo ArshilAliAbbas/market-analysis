@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Activity, Cpu, ShieldAlert, Zap } from "lucide-react";
 import { useRef } from "react";
@@ -199,6 +200,14 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
              <span className="text-[10px] text-white/40 uppercase tracking-widest">
                 A <a href="https://www.softpulser.com" target="_blank" rel="noreferrer" className="text-white hover:text-white/80 transition-colors underline underline-offset-4 decoration-white/30">Softpulser</a> Company
              </span>
+          </div>
+
+          <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest text-white/40 font-bold font-sans">
+             <Link href="/legal/terms" className="hover:text-white transition-colors">Terms</Link>
+             <span>•</span>
+             <Link href="/legal/privacy" className="hover:text-white transition-colors">Privacy</Link>
+             <span>•</span>
+             <Link href="/legal/disclaimer" className="hover:text-white transition-colors">Disclaimer</Link>
           </div>
 
           <div className="flex items-center gap-2 text-xs text-white/40 font-mono">
