@@ -1,3 +1,5 @@
+<img src="/logo.png" />
+
 # 🧠 Axiom Terminal — AI Trading Dashboard
 
 Axiom Terminal is a **real-time AI-powered trading dashboard** built to help traders analyze markets, interpret news, and plan trades using intelligent automation.
@@ -98,8 +100,8 @@ Designed with a **Bloomberg Terminal–inspired interface**, it combines market 
 ## 🧪 Local Development
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 Open http://localhost:3000
