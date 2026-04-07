@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 Axiom Terminal — AI Trading Dashboard
 
-## Getting Started
+Axiom Terminal is a **real-time AI-powered trading dashboard** built to help traders analyze markets, interpret news, and plan trades using intelligent automation.
 
-First, run the development server:
+Designed with a **Bloomberg Terminal–inspired interface**, it combines market data, AI insights, and risk tools into one unified platform.
+
+---
+
+## 🚀 Features
+
+### 📊 Market Watch
+
+* Real-time tracking of:
+
+  * Indices (S&P 500, Nasdaq)
+  * Forex (EUR/USD, GBP/USD)
+  * Crypto (BTC, ETH)
+* Powered by Finnhub API
+
+---
+
+### 🧠 AI Market Narrative
+
+* Generates a **live overview of current market conditions**
+* Summarizes macro trends, sentiment, and key drivers
+
+---
+
+### 📰 Intelligence Feed
+
+* Aggregates financial news in real time
+* AI analyzes each article and provides:
+
+  * Summary
+  * Sentiment (bullish / bearish / neutral)
+  * Market impact
+  * Affected assets
+  * Trade bias
+
+---
+
+### 📅 Economic Calendar
+
+* Tracks key macroeconomic events
+* Helps anticipate volatility and trading opportunities
+
+---
+
+### ⚖️ Risk Manager
+
+* Calculate:
+
+  * Position size
+  * Risk percentage
+  * Stop loss / take profit levels
+* Built for disciplined trading
+
+---
+
+### 📈 Trade Planning (WIP)
+
+* AI-assisted trade setups
+* Structured entry, exit, and reasoning
+
+---
+
+### 🔔 Smart Notifications (WIP)
+
+* Priority-based alerts
+* Inspired by mobile notification systems
+
+---
+
+## 🛠 Tech Stack
+
+* **Framework:** Next.js 15 (App Router)
+* **Deployment:** Vercel
+* **APIs:**
+
+  * Finnhub (Market Data & Economic Calendar)
+  * NewsAPI (Fallback News Source)
+  * Workers AI / OpenAI (AI Analysis Layer)
+
+---
+
+## ⚙️ Architecture
+
+* Full-stack Next.js app using **serverless API routes**
+* Backend logic handled in `/app/api/*`
+* AI processing handled via:
+
+  * `/api/analyze-news`
+  * `/api/market-narrative`
+* Designed for **low-latency + scalable edge deployment**
+
+---
+
+## 🧪 Local Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔐 Environment Variables
 
-## Learn More
+Create a `.env.local` file:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+FINNHUB_API_KEY=your_key
+NEWS_API_KEY=your_key
+OPENAI_API_KEY=your_key
+CF_API_TOKEN=your_cloudflare_token
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🌐 Deployment
 
-## Deploy on Vercel
+Deployed using Vercel.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Make sure to configure environment variables in:
+**Project Settings → Environment Variables**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🎯 Roadmap
+
+* [ ] Dynamic market tabs (Equities / FX / Crypto)
+* [ ] AI “Current Market Play” feature
+* [ ] Advanced notification system
+* [ ] Full dark institutional UI
+* [ ] Premium AI tier (monetization)
+
+---
+
+## 💡 Vision
+
+Axiom Terminal aims to become a **personal AI trading assistant** — delivering institutional-level insights in a simple, fast, and accessible interface.
+
+---
+
+## ⚠️ Disclaimer
+
+This platform is for informational purposes only and does not constitute financial advice. Always do your own research before making trading decisions.
+
+---
+
+## 📬 Contact
+
+For collaboration or feedback, reach out via GitHub.
+
+---
+
+⭐ If you find this project useful, consider starring the repo.
