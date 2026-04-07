@@ -11,6 +11,8 @@ import VolatilityTiming from "@/components/dashboard/VolatilityTiming";
 import { useAlerts, CriticalBanner } from "@/components/dashboard/SmartAlerts";
 import RiskManager from "@/components/dashboard/RiskManager";
 
+import CurrentMarketPlay from "@/components/dashboard/CurrentMarketPlay";
+
 export default function Dashboard() {
   const { alerts, criticalBanner, dismissBanner, markAllRead, clearAll, unreadCount } = useAlerts();
   const [activeMarket, setActiveMarket] = useState("Global Equities");
@@ -29,8 +31,13 @@ export default function Dashboard() {
       <div className="flex flex-col xl:flex-row flex-1 gap-3 md:gap-4 overflow-hidden min-h-0">
         
         {/* Left Panel - Market Data */}
-        <div className="hidden xl:flex w-[320px] shrink-0 flex-col gap-3 md:gap-4 overflow-hidden min-h-0">
-          <MarketOverview />
+        <div className="hidden xl:flex w-[320px] shrink-0 flex-col gap-3 overflow-hidden min-h-0">
+          <div className="flex-[6] overflow-hidden min-h-0">
+            <MarketOverview />
+          </div>
+          <div className="flex-[4] overflow-hidden min-h-0">
+            <CurrentMarketPlay />
+          </div>
         </div>
         
         {/* Center Panel - Dominant Intelligence Area */}
@@ -53,7 +60,7 @@ export default function Dashboard() {
             <TradeBias activeMarket={activeMarket} />
           </div>
           <div className="flex-[3] overflow-hidden min-h-0">
-            <RiskManager activeMarket={activeMarket} />
+            <RiskManager />
           </div>
         </div>
         

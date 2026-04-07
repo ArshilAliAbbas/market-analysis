@@ -27,8 +27,13 @@ async function safeFetch<T>(url: string, options?: RequestInit): Promise<T | nul
 }
 
 // ─── Market Data (refresh: 5-10s) ───
-export async function getMarketData() {
-  return safeFetch<any[]>("/api/market");
+export async function getMarketData(assets?: any[]) {
+  if (!assets) return safeFetch<any[]>("/api/market");
+  return safeFetch<any[]>("/api/market", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ assets })
+  });
 }
 
 // ─── News Feed (refresh: 30-60s) ───
@@ -54,18 +59,29 @@ export async function analyzeNewsWithAI(
     affected_assets: string[];
     explanation: string;
     trade_bias: string;
-  }>("/api/analyze-news", {
+  }>("/api/ai-worker", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ headline, description, symbols }),
+    body: JSON.stringify({ 
+      type: "news-analysis",
+      payload: { headline, description, symbols }
+    }),
   });
 }
 
 // ─── AI: Generate market narrative from news ───
 export async function generateMarketNarrative(newsItems: any[]) {
-  return safeFetch<{ narrative: string }>("/api/market-narrative", {
+  const res = await safeFetch<any>("/api/ai-worker", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ newsItems }),
+    body: JSON.stringify({ 
+      type: "market-narrative",
+      payload: newsItems 
+    }),
   });
+  
+  if (res && res.market_summary) {
+    return { narrative: res.market_summary };
+  }
+  return { narrative: "Unable to synthesize market narrative at this time." };
 }

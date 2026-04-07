@@ -1,46 +1,46 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* ─── Deep Black Foundation ─── */
-  --color-background: #0B0F14;
-  --color-foreground: #F3F4F6;
+  /* ─── Premium Monochrome Foundation ─── */
+  --color-background: #0a0a0a;
+  --color-foreground: #fafafa;
   
-  --color-card: #11161D;
-  --color-card-hover: #161D26;
-  --color-card-border: #1A222C;
-  --color-divider: #1A222C;
+  --color-card: #111111;
+  --color-card-hover: #181818;
+  --color-card-border: #222222;
+  --color-divider: #222222;
   
-  /* Surface layers — flat, no glow */
-  --color-surface-elevated: #151B24;
-  --color-surface-sunken: #0B0F14;
+  /* Surface layers */
+  --color-surface-elevated: #1a1a1a;
+  --color-surface-sunken: #050505;
   
-  /* AI accent — pure, minimal */
-  --color-ai-primary: #8B5CF6;
-  --color-ai-secondary: #A78BFA;
-  --color-ai-subtle: rgba(139, 92, 246, 0.08);
+  /* AI accent — monochrome / minimal white glow */
+  --color-ai-primary: #ffffff;
+  --color-ai-secondary: #a3a3a3;
+  --color-ai-subtle: rgba(255, 255, 255, 0.05);
   
-  /* Functional — strict institutional */
-  --color-bullish: #22C55E;
-  --color-bullish-bg: rgba(34, 197, 94, 0.06);
-  --color-bearish: #EF4444;
-  --color-bearish-bg: rgba(239, 68, 68, 0.06);
-  --color-neutral: #6B7280;
-  --color-neutral-bg: rgba(107, 114, 128, 0.06);
-  --color-caution: #F59E0B;
+  /* Functional — strict institutional (Only Green/Red for price) */
+  --color-bullish: #10b981;
+  --color-bullish-bg: rgba(16, 185, 129, 0.1);
+  --color-bearish: #ef4444;
+  --color-bearish-bg: rgba(239, 68, 68, 0.1);
+  --color-neutral: #525252;
+  --color-neutral-bg: rgba(82, 82, 82, 0.2);
+  --color-caution: #f59e0b;
   
   /* Text hierarchy — strict contrast, institutional readability */
-  --color-text-primary: #F9FAFB;
-  --color-text-secondary: #9CA3AF;
-  --color-text-tertiary: #6B7280;
-  --color-text-muted: #4B5563;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a3a3a3;
+  --color-text-tertiary: #737373;
+  --color-text-muted: #525252;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 :root {
-  --background: #0B0F14;
-  --foreground: #F9FAFB;
+  --background: #0a0a0a;
+  --foreground: #ffffff;
 }
 
 body {
@@ -136,6 +136,6 @@ input[type="range"]::-moz-range-thumb {
 
 /* ─── Selection color ─── */
 ::selection {
-  background: rgba(139, 92, 246, 0.25);
+  background: rgba(255, 255, 255, 0.15);
   color: var(--color-text-primary);
 }

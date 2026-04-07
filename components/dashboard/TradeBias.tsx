@@ -1,211 +1,251 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Card } from "../ui/Card";
-import { Badge } from "../ui/Badge";
 import { 
-  Crosshair, TrendingUp, TrendingDown, Info, 
-  CheckCircle, Activity, ShieldAlert, Shield, ShieldCheck, 
-  Zap, XCircle, CheckSquare 
+  Loader2, Zap, ArrowRight, ArrowDownRight, 
+  ArrowUpRight, GitBranch, Target, Crosshair, 
+  Activity, BarChart2, ShieldAlert
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-interface TradeIdea {
-  id: string;
+type TradePlan = {
   asset: string;
-  direction: "Long" | "Short";
-  setupType: "Breakout" | "Pullback" | "Reversal";
-  entryZone: string;
-  takeProfit: string;
-  stopLoss: string;
-  timeframe: string;
-  confirmationRule: string;
-  invalidationTrigger: string;
-  riskRating: "Low" | "Medium" | "High";
-  confidence: number;
-  reasoning: string;
-  structureStatus: "Trending Up" | "Trending Down" | "Ranging" | "Breakout Potential";
-  keyResistance: string;
-  keySupport: string;
-  liquidityZone: string;
-  prevHighLow: string;
-  sessionHighLow: string;
-}
-
-const mockIdeas: TradeIdea[] = [
-  {
-    id: "1",
-    asset: "EURUSD",
-    direction: "Long",
-    setupType: "Breakout",
-    entryZone: "1.0820 - 1.0835",
-    takeProfit: "1.0900",
-    stopLoss: "1.0790",
-    timeframe: "Intraday",
-    confirmationRule: "Wait for 15m candle close clear above 1.0835.",
-    invalidationTrigger: "4H candle close below 1.0780 invalidates structure.",
-    riskRating: "Medium",
-    confidence: 78,
-    reasoning: "ECB dovish signals fully absorbed. Euro finding macro support while DXY loses intraday momentum.",
-    structureStatus: "Breakout Potential",
-    keyResistance: "1.0875 (Major)",
-    keySupport: "1.0795",
-    liquidityZone: "1.0805 - 1.0815",
-    prevHighLow: "1.0862 / 1.0788",
-    sessionHighLow: "1.0850 / 1.0810"
-  },
-  {
-    id: "2",
-    asset: "NDX",
-    direction: "Short",
-    setupType: "Reversal",
-    entryZone: "18,100 - 18,150",
-    takeProfit: "17,800",
-    stopLoss: "18,250",
-    timeframe: "Swing",
-    confirmationRule: "Rejection wick forming on 1H chart near 18,150 resistance.",
-    invalidationTrigger: "Price holds and consolidates strongly above 18,200.",
-    riskRating: "High",
-    confidence: 62,
-    reasoning: "Index hitting major supply wall. Momentum indicators (RSI) severely overbought on daily timeframe.",
-    structureStatus: "Trending Down",
-    keyResistance: "18,200",
-    keySupport: "17,950 (Key)",
-    liquidityZone: "18,150 - 18,180",
-    prevHighLow: "18,140 / 17,920",
-    sessionHighLow: "18,115 / 18,050"
-  }
-];
+  primary: {
+    direction: "long" | "short";
+    entry: string;
+    stop_loss: string;
+    take_profit: string;
+    confidence: "low" | "medium" | "high";
+  };
+  alternative: {
+    condition: string;
+    direction: "long" | "short";
+    entry: string;
+    stop_loss: string;
+    take_profit: string;
+  };
+  levels: {
+    resistance: string[];
+    support: string[];
+  };
+  context: {
+    trend: "bullish" | "bearish" | "ranging";
+    volatility: "low" | "medium" | "high";
+    session_bias: string;
+  };
+  execution: {
+    confirmation: string;
+    invalidation: string;
+  };
+};
 
 export default function TradeBias({ activeMarket = "Global Equities" }: { activeMarket?: string }) {
-  const assetSymbol = activeMarket === "FX Majors" ? "EUR/USD" : activeMarket === "Crypto Liquidity" ? "BTC/USD" : "SPX/NDX";
+  const [plan, setPlan] = useState<TradePlan | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const targetAsset = activeMarket === "Global Equities" ? "SPX" : 
+                      activeMarket === "Crypto Liquidity" ? "BTC" : 
+                      activeMarket === "FX Majors" ? "EURUSD" : "SPX";
+
+  useEffect(() => {
+    let active = true;
+    const fetchPlan = async () => {
+      setIsLoading(true);
+      try {
+        const cacheKey = `axiom_trade_plan_${targetAsset}`;
+        const cached = localStorage.getItem(cacheKey);
+        
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          if (Date.now() - timestamp < 4 * 60 * 1000) { // 4 min cache
+            setPlan(data);
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        const res = await fetch("/api/ai-worker", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "trade-plan",
+            payload: { targetAsset, data: `Analyze ${targetAsset} for a multi-scenario trade setup.` }
+          })
+        });
+
+        const data = await res.json();
+        
+        if (active && data && data.primary) {
+          setPlan(data);
+          localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
+        }
+      } catch (error) {
+        console.error("Failed to load trade plan", error);
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    };
+
+    fetchPlan();
+    return () => { active = false; };
+  }, [targetAsset]);
+
+  const getDirColor = (dir: string) => dir?.toLowerCase() === "long" ? "text-bullish" : "text-bearish";
+  const getDirBg = (dir: string) => dir?.toLowerCase() === "long" ? "bg-bullish/10 border-bullish/20" : "bg-bearish/10 border-bearish/20";
+  const DirIcon = ({ dir, className }: { dir: string, className?: string }) => 
+    dir?.toLowerCase() === "long" ? <ArrowUpRight className={className} /> : <ArrowDownRight className={className} />;
 
   return (
-    <Card className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-divider">
-        <h2 className="text-[9px] font-bold uppercase tracking-widest text-text-muted">
-          <span>Trade Planning:</span> <span className="ml-1 text-text-primary">{assetSymbol}</span>
+    <Card className="flex flex-col h-full overflow-hidden border-card-border relative">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-divider bg-surface-sunken/40">
+        <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted flex items-center gap-2">
+          <Target className="w-3.5 h-3.5" /> Trade Planning
         </h2>
-        <div className="flex items-center gap-1">
-          <CheckCircle className="w-3 h-3 text-bullish"/>
-          <span className="text-[9px] font-extrabold text-bullish uppercase tracking-widest">BULLISH</span>
-        </div>
+        {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin text-text-tertiary" />}
       </div>
 
-      <div className="flex flex-col gap-0 overflow-y-auto no-scrollbar flex-1">
-        {mockIdeas.map((idea, idx) => (
-          <div key={idea.id} className={`p-3 hover:bg-white/[0.015] transition-colors ${idx !== mockIdeas.length - 1 ? 'border-b border-divider' : ''}`}>
+      <div className="flex-1 overflow-y-auto no-scrollbar relative min-h-0">
+        {isLoading && !plan ? (
+          <div className="flex flex-col items-center justify-center h-full gap-3 text-text-tertiary">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Structuring Scenarios...</span>
+          </div>
+        ) : !plan ? (
+          <div className="flex items-center justify-center h-full text-xs text-text-muted">Analysis unavailable.</div>
+        ) : (
+          <div className="flex flex-col">
             
-            {/* Header */}
-            <div className="flex justify-between items-start mb-3">
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-extrabold text-lg tracking-tight text-text-primary leading-none">{idea.asset}</span>
-                  <Badge variant={idea.direction === "Long" ? "bullish" : "bearish"} className="px-1.5 py-0">
-                    {idea.direction === "Long" ? <TrendingUp className="w-2.5 h-2.5 mr-0.5" /> : <TrendingDown className="w-2.5 h-2.5 mr-0.5" />}
-                    {idea.direction}
-                  </Badge>
-                </div>
-                <div className="flex flex-wrap items-center gap-1">
-                  <span className="text-[8px] text-text-muted font-bold uppercase tracking-widest">
-                    {idea.setupType}
-                  </span>
-                  <span className="text-text-muted">·</span>
-                  <span className={`text-[8px] font-bold uppercase tracking-widest ${
-                    idea.structureStatus === 'Breakout Potential' ? 'text-ai-primary/60' : 
-                    idea.structureStatus === 'Trending Up' ? 'text-bullish/70' :
-                    idea.structureStatus === 'Trending Down' ? 'text-bearish/70' : 'text-text-tertiary'
-                  }`}>{idea.structureStatus}</span>
-                </div>
+            {/* Header: Asset & Context */}
+            <div className="p-4 border-b border-divider">
+              <div className="flex justify-between items-start mb-4">
+                <span className="font-extrabold text-2xl tracking-tight leading-none text-white">{plan.asset}</span>
+                <span className="text-[9px] uppercase font-bold text-text-tertiary tracking-[0.2em] bg-surface-elevated px-2 py-1 rounded">
+                  {plan.context.session_bias} Session
+                </span>
               </div>
               
-              <div className="flex flex-col items-end gap-1 data-value">
-                <div className="flex items-center gap-1">
-                  <span className="text-[8px] uppercase font-bold text-text-muted tracking-widest">Prob</span>
-                  <span className={`text-xs font-extrabold ${idea.confidence > 70 ? 'text-bullish' : 'text-text-secondary'}`}>{idea.confidence}%</span>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex items-center gap-2 bg-surface-sunken/50 p-2 rounded border border-divider">
+                  <Activity className="w-3.5 h-3.5 text-text-muted" />
+                  <div className="flex flex-col">
+                    <span className="text-[8px] uppercase tracking-widest text-text-muted font-bold">Trend</span>
+                    <span className={cn("text-xs font-bold uppercase", plan.context.trend.toLowerCase() === 'bullish' ? 'text-bullish' : plan.context.trend.toLowerCase() === 'bearish' ? 'text-bearish' : 'text-text-primary')}>{plan.context.trend}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-0.5">
-                  {idea.riskRating === "Low" && <ShieldCheck className="w-3 h-3 text-bullish/60" />}
-                  {idea.riskRating === "Medium" && <Shield className="w-3 h-3 text-caution/60" />}
-                  {idea.riskRating === "High" && <ShieldAlert className="w-3 h-3 text-bearish/60" />}
-                  <span className={`text-[8px] font-extrabold uppercase ${idea.riskRating === 'High' ? 'text-bearish' : idea.riskRating === 'Medium' ? 'text-caution' : 'text-bullish'}`}>{idea.riskRating}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Order Flow Grid */}
-            <div className="mb-3 text-[11px] font-medium text-text-secondary w-full border border-card-border rounded overflow-hidden data-value">
-              <div className="grid grid-cols-2">
-                <div className="px-2.5 py-1.5 border-b border-r border-divider flex justify-between items-center">
-                  <span className="text-[8px] uppercase font-bold text-text-muted tracking-widest">Res</span>
-                  <span className="text-text-primary text-[10px] font-semibold">{idea.keyResistance}</span>
-                </div>
-                <div className="px-2.5 py-1.5 border-b border-divider flex justify-between items-center">
-                  <span className="text-[8px] uppercase font-bold text-text-muted tracking-widest">Sup</span>
-                  <span className="text-text-primary text-[10px] font-semibold">{idea.keySupport}</span>
-                </div>
-                <div className="px-2.5 py-1.5 border-b border-r border-divider flex justify-between items-center">
-                  <span className="text-[8px] uppercase font-bold text-text-muted tracking-widest">Liq</span>
-                  <span className="text-ai-primary/60 text-[10px] font-semibold">{idea.liquidityZone}</span>
-                </div>
-                <div className="px-2.5 py-1.5 border-b border-divider flex justify-between items-center">
-                  <span className="text-[8px] uppercase font-bold text-text-muted tracking-widest">Sess</span>
-                  <span className="text-text-primary text-[10px] font-semibold">{idea.sessionHighLow}</span>
+                <div className="flex items-center gap-2 bg-surface-sunken/50 p-2 rounded border border-divider">
+                  <BarChart2 className="w-3.5 h-3.5 text-text-muted" />
+                  <div className="flex flex-col">
+                    <span className="text-[8px] uppercase tracking-widest text-text-muted font-bold">Volatility</span>
+                    <span className="text-xs text-white font-bold uppercase">{plan.context.volatility}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Entry / Target / SL */}
-            <div className="border border-card-border rounded p-2.5 mb-3 data-value">
-              <div className="flex justify-between items-center border-b border-divider pb-2 mb-2">
-                <span className="text-[8px] text-text-muted uppercase font-bold tracking-widest flex items-center gap-1"><Crosshair className="w-2.5 h-2.5" /> Entry</span>
-                <span className="text-[12px] font-bold text-text-primary">{idea.entryZone}</span>
+            {/* Part 1: Primary Setup */}
+            <div className="p-4 border-b border-divider relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                <Target className="w-24 h-24" />
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-[8px] text-bullish/60 uppercase font-bold tracking-widest">TP</span>
-                  <span className="text-[12px] font-bold text-bullish">{idea.takeProfit}</span>
-                </div>
-                <div className="flex justify-between items-center pl-3 border-l border-divider">
-                  <span className="text-[8px] text-bearish/60 uppercase font-bold tracking-widest">SL</span>
-                  <span className="text-[12px] font-bold text-bearish">{idea.stopLoss}</span>
+              
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[10px] uppercase font-bold text-text-muted tracking-[0.2em]">1. Primary Setup</span>
+                <div className={cn("flex items-center gap-1.5 px-2 py-1 rounded border", getDirBg(plan.primary.direction))}>
+                  <DirIcon dir={plan.primary.direction} className={cn("w-3.5 h-3.5", getDirColor(plan.primary.direction))} />
+                  <span className={cn("text-[9px] uppercase font-extrabold tracking-widest", getDirColor(plan.primary.direction))}>{plan.primary.direction}</span>
                 </div>
               </div>
-            </div>
 
-            {/* Rules */}
-            <div className="flex flex-col gap-2 mb-3 border border-card-border rounded p-2.5">
-              <div className="flex gap-2 items-start">
-                <CheckSquare className="w-3 h-3 text-bullish/50 shrink-0 mt-[1px]" />
+              <div className="grid grid-cols-3 gap-2 mb-4">
                 <div className="flex flex-col">
-                  <span className="text-[8px] text-bullish/50 font-bold uppercase tracking-widest mb-0.5">Confirm</span>
-                  <span className="text-[10px] text-text-secondary leading-tight">{idea.confirmationRule}</span>
+                  <span className="text-[8px] text-text-tertiary uppercase tracking-widest font-bold mb-1">Entry Zone</span>
+                  <span className="text-[13px] font-extrabold text-white">{plan.primary.entry}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[8px] text-bearish/70 uppercase tracking-widest font-bold mb-1">Stop Loss</span>
+                  <span className="text-[13px] font-extrabold text-bearish">{plan.primary.stop_loss}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[8px] text-bullish/70 uppercase tracking-widest font-bold mb-1">Take Profit</span>
+                  <span className="text-[13px] font-extrabold text-bullish">{plan.primary.take_profit}</span>
                 </div>
               </div>
-              <div className="flex gap-2 items-start">
-                <XCircle className="w-3 h-3 text-bearish/50 shrink-0 mt-[1px]" />
+
+              <div className="flex flex-col bg-surface-elevated/30 border border-divider p-2.5 rounded">
+                <span className="text-[8px] text-text-muted uppercase tracking-widest font-bold mb-1 flex items-center gap-1.5">
+                  <Crosshair className="w-3 h-3" /> Execution Rule
+                </span>
+                <span className="text-[11px] text-white/90 leading-relaxed font-medium">{plan.execution.confirmation}</span>
+              </div>
+            </div>
+
+            {/* Part 2: Alternative Scenario */}
+            <div className="p-4 border-b border-divider bg-surface-sunken/20">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[10px] uppercase font-bold text-text-muted tracking-[0.2em] flex items-center gap-1.5">
+                  <GitBranch className="w-3.5 h-3.5" /> 2. Alt Scenario
+                </span>
+                <div className={cn("flex items-center gap-1 px-1.5 py-0.5 rounded border border-divider", getDirBg(plan.alternative.direction))}>
+                  <span className={cn("text-[8px] uppercase font-extrabold tracking-widest", getDirColor(plan.alternative.direction))}>{plan.alternative.direction}</span>
+                </div>
+              </div>
+
+              <div className="mb-3 pl-3 border-l-[1.5px] border-text-tertiary">
+                <span className="text-[8px] text-text-tertiary uppercase tracking-widest font-bold mb-0.5 block">Trigger Condition</span>
+                <span className="text-xs text-white/80">{plan.alternative.condition}</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 opacity-80 hover:opacity-100 transition-opacity">
                 <div className="flex flex-col">
-                  <span className="text-[8px] text-bearish/50 font-bold uppercase tracking-widest mb-0.5">Invalid</span>
-                  <span className="text-[10px] text-text-secondary leading-tight">{idea.invalidationTrigger}</span>
+                  <span className="text-[7px] text-text-tertiary uppercase tracking-widest font-bold mb-0.5">Entry</span>
+                  <span className="text-[11px] font-bold text-white">{plan.alternative.entry}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[7px] text-text-tertiary uppercase tracking-widest font-bold mb-0.5">SL</span>
+                  <span className="text-[11px] font-bold text-bearish">{plan.alternative.stop_loss}</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[7px] text-text-tertiary uppercase tracking-widest font-bold mb-0.5">TP</span>
+                  <span className="text-[11px] font-bold text-bullish">{plan.alternative.take_profit}</span>
                 </div>
               </div>
             </div>
 
-            {/* Rationale */}
-            <div>
-              <span className="text-[8px] text-ai-primary/50 font-bold uppercase tracking-widest mb-1 flex items-center gap-1">
-                <Zap className="w-2.5 h-2.5" /> Rationale
-              </span>
-              <p className="text-[11px] text-text-tertiary leading-relaxed">{idea.reasoning}</p>
+            {/* Part 3: Support / Resistance */}
+            <div className="p-4 flex flex-col gap-3">
+              <span className="text-[10px] uppercase font-bold text-text-muted tracking-[0.2em]">3. Key Levels</span>
+              
+              <div className="flex gap-4">
+                <div className="flex-1 flex flex-col gap-1.5">
+                  <span className="text-[8px] text-bearish/70 uppercase tracking-widest font-bold">Resistance</span>
+                  {plan.levels.resistance.map((lvl, idx) => (
+                    <div key={idx} className="bg-bearish/5 border border-bearish/10 px-2 py-1 rounded text-xs text-white/90 font-mono">
+                      {lvl}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex-1 flex flex-col gap-1.5">
+                  <span className="text-[8px] text-bullish/70 uppercase tracking-widest font-bold">Support</span>
+                  {plan.levels.support.map((lvl, idx) => (
+                    <div key={idx} className="bg-bullish/5 border border-bullish/10 px-2 py-1 rounded text-xs text-white/90 font-mono">
+                      {lvl}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2 mt-2 bg-surface-elevated/30 border border-card-border p-2 rounded">
+                <ShieldAlert className="w-3.5 h-3.5 text-bearish shrink-0 mt-0.5" />
+                <div className="flex flex-col">
+                  <span className="text-[8px] text-text-tertiary uppercase tracking-widest font-bold mb-1">Invalidation</span>
+                  <span className="text-[10px] text-text-secondary leading-tight">{plan.execution.invalidation}</span>
+                </div>
+              </div>
             </div>
-            
+
           </div>
-        ))}
-      </div>
-
-      <div className="p-3 border-t border-divider">
-        <p className="text-[9px] text-text-muted leading-snug flex items-start gap-1.5">
-          <Info className="w-3 h-3 shrink-0 mt-0.5" />
-          <span>AI-assisted analysis for research only. Not financial advice.</span>
-        </p>
+        )}
       </div>
     </Card>
   );
