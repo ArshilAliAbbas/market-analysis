@@ -10,8 +10,11 @@ interface RequestBody {
 }
 
 export async function POST(req: Request) {
+  let reqType: RequestType | undefined;
+  
   try {
     const body: RequestBody = await req.json();
+    reqType = body.type;
     const { type, payload } = body;
 
     let prompt = "";
@@ -109,16 +112,37 @@ ${JSON.stringify(payload)}
     const accountId = process.env.CF_ACCOUNT_ID;
     const apiToken = process.env.CF_API_TOKEN;
 
+    const getFallback = (reqType: RequestType, expl: string) => {
+      if (reqType === "market-narrative") {
+        return {
+          market_summary: "AI failed",
+          sentiment: "neutral",
+          key_drivers: [],
+          risk_factors: [],
+          opportunities: []
+        };
+      } else if (reqType === "trade-setup" || reqType === "trade-plan") {
+        return {
+          primary: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: expl },
+          alternate: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: expl },
+          breakdown: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: expl },
+          key_levels: { resistance: [], support: [], liquidity: [] }
+        };
+      } else {
+        return {
+          summary: "AI failed",
+          sentiment: "neutral",
+          impact: "low",
+          affected_assets: [],
+          trade_bias: "wait",
+          confidence: "low",
+          explanation: expl
+        };
+      }
+    };
+
     if (!accountId || !apiToken) {
-      return NextResponse.json({
-        summary: "AI failed",
-        sentiment: "neutral",
-        impact: "low",
-        affected_assets: [],
-        trade_bias: "wait",
-        confidence: "low",
-        explanation: "API error fallback"
-      });
+      return NextResponse.json(getFallback(type, "API error fallback"));
     }
 
     const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/meta/llama-3-8b-instruct`;
@@ -144,15 +168,7 @@ ${JSON.stringify(payload)}
     });
 
     if (!response.ok) {
-      return NextResponse.json({
-        summary: "AI failed",
-        sentiment: "neutral",
-        impact: "low",
-        affected_assets: [],
-        trade_bias: "wait",
-        confidence: "low",
-        explanation: "API error fallback"
-      });
+      return NextResponse.json(getFallback(type, "API error fallback: " + response.status));
     }
 
     const data = await response.json();
@@ -193,39 +209,28 @@ ${JSON.stringify(payload)}
       }
     } catch (e) {
       console.error("PARSE FAILED:", raw);
-
-      if (type === "trade-setup" || type === "trade-plan") {
-        parsed = {
-          primary: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: raw || "Fallback used due to AI failure" },
-          alternate: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: "Fallback used" },
-          breakdown: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: "Fallback used" },
-          key_levels: { resistance: [], support: [], liquidity: [] }
-        };
-      } else {
-        parsed = {
-          summary: raw || "No response",
-          sentiment: "neutral",
-          impact: "low",
-          affected_assets: [],
-          trade_bias: "wait",
-          confidence: "low",
-          explanation: "Fallback used"
-        };
-      }
+      parsed = getFallback(type, raw || "Fallback used due to AI failure");
     }
 
     return NextResponse.json(parsed);
   } catch (error) {
     console.error("AI WORKER ERROR:", error);
-    return NextResponse.json({
-      summary: "AI failed",
-      sentiment: "neutral",
-      impact: "low",
-      affected_assets: [],
-      trade_bias: "wait",
-      confidence: "low",
-      explanation: "API error fallback",
-      primary: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: "Fallback used" }
-    });
+    
+    // Quick inline fallback if type is undefined completely
+    let fallbackResult;
+    if (reqType === "market-narrative") {
+      fallbackResult = { market_summary: "AI failed", sentiment: "neutral", key_drivers: [], risk_factors: [], opportunities: [] };
+    } else if (reqType === "trade-setup" || reqType === "trade-plan") {
+      fallbackResult = {
+        primary: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: "Fallback used" },
+        alternate: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: "Fallback used" },
+        breakdown: { direction: "-", entry: "-", stop_loss: "-", take_profit: "-", confidence: "low", reasoning: "Fallback used" },
+        key_levels: { resistance: [], support: [], liquidity: [] }
+      };
+    } else {
+      fallbackResult = { summary: "AI failed", sentiment: "neutral", impact: "low", affected_assets: [], trade_bias: "wait", confidence: "low", explanation: "API error fallback" };
+    }
+    
+    return NextResponse.json(fallbackResult);
   }
 }
