@@ -7,8 +7,17 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { getEconomicEvents } from "@/services/api";
 
+interface EconomicEvent {
+  time: string;
+  event: string;
+  country: string;
+  impact: "HIGH" | "MEDIUM" | "LOW";
+  estimate?: string;
+  actual?: string;
+}
+
 export default function VolatilityTiming({ activeMarket = "Global Equities" }: { activeMarket?: string }) {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<EconomicEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -20,7 +29,7 @@ export default function VolatilityTiming({ activeMarket = "Global Equities" }: {
       return;
     }
     
-    const sorted = data.sort((a: any, b: any) => {
+    const sorted = (data as EconomicEvent[]).sort((a, b) => {
       return new Date(a.time).getTime() - new Date(b.time).getTime();
     }).filter(evt => new Date(evt.time).getTime() > Date.now());
 
@@ -40,7 +49,7 @@ export default function VolatilityTiming({ activeMarket = "Global Equities" }: {
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const marketEvents = events.filter((evt: any) => {
+  const marketEvents = events.filter((evt) => {
     if (activeMarket === "FX Majors") return evt.country === "US" || evt.country === "EU" || evt.country === "UK" || evt.country === "JP";
     if (activeMarket === "Crypto Liquidity") return evt.country === "US" || evt.impact === "HIGH";
     return true;
