@@ -28,12 +28,7 @@ function ParticleField() {
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={0.02}
@@ -50,7 +45,7 @@ function ParticleField() {
 
 function GlowingSphere() {
   const ref = useRef<THREE.Mesh>(null!);
-  
+
   useFrame((state) => {
     if (!ref.current) return;
     ref.current.rotation.x = state.clock.elapsedTime * 0.1;
@@ -80,7 +75,7 @@ function GlowingSphere() {
 
 function GlassTorus() {
   const ref = useRef<THREE.Mesh>(null!);
-  
+
   useFrame((state) => {
     if (!ref.current) return;
     ref.current.rotation.x = state.clock.elapsedTime * 0.08;
@@ -111,7 +106,7 @@ function GridPlane() {
 
   useFrame((state) => {
     if (!ref.current) return;
-    (ref.current.material as THREE.MeshStandardMaterial).opacity = 
+    (ref.current.material as THREE.MeshStandardMaterial).opacity =
       0.05 + Math.sin(state.clock.elapsedTime * 0.5) * 0.02;
   });
 
@@ -140,11 +135,9 @@ function DataStreams() {
       const x = (Math.random() - 0.5) * 15;
       const z = (Math.random() - 0.5) * 10 - 3;
       for (let j = 0; j < 20; j++) {
-        points.push(new THREE.Vector3(
-          x + Math.sin(j * 0.3) * 0.3,
-          -5 + j * 0.5,
-          z
-        ));
+        points.push(
+          new THREE.Vector3(x + Math.sin(j * 0.3) * 0.3, -5 + j * 0.5, z),
+        );
       }
       const geometry = new THREE.BufferGeometry().setFromPoints(points);
       const material = new THREE.LineBasicMaterial({
@@ -163,7 +156,8 @@ function DataStreams() {
     if (!ref.current) return;
     lineObjects.forEach((line, i) => {
       const mat = line.material as THREE.LineBasicMaterial;
-      mat.opacity = 0.05 + Math.sin(state.clock.elapsedTime * (0.5 + i * 0.05) + i) * 0.04;
+      mat.opacity =
+        0.05 + Math.sin(state.clock.elapsedTime * (0.5 + i * 0.05) + i) * 0.04;
     });
   });
 
@@ -181,8 +175,8 @@ export default function Scene3D() {
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
         camera={{ position: [0, 0, 7], fov: 60 }}
-        gl={{ 
-          antialias: true, 
+        gl={{
+          antialias: true,
           alpha: true,
           powerPreference: "high-performance",
         }}
@@ -192,7 +186,7 @@ export default function Scene3D() {
         <ambientLight intensity={0.3} />
         <pointLight position={[5, 5, 5]} intensity={0.5} color="#fce075" />
         <pointLight position={[-5, -5, 3]} intensity={0.3} color="#ea580c" />
-        
+
         <ParticleField />
         <GlowingSphere />
         <GlassTorus />
