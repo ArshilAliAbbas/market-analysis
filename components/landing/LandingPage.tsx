@@ -7,9 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { Search, Sun, Command, Terminal, Activity, ShieldAlert, BarChart3, Database, Globe, Cpu, Zap, ArrowRight, Code2, Lock } from "lucide-react";
-
-const Scene3D = dynamic(() => import("./Scene3D"), { ssr: false });
-
+import { WebcamPixelGrid } from "@/components/ui/webcam-pixel-grid";
 gsap.registerPlugin(ScrollTrigger);
 
 interface LandingPageProps {
@@ -34,6 +32,8 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
 
   // Code Simulation
   const [codeLines, setCodeLines] = useState<number>(0);
+  const [showCookies, setShowCookies] = useState(true);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCodeLines(prev => (prev < 5 ? prev + 1 : 0));
@@ -175,25 +175,40 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-[#010101] text-[#FAFAFA] font-sans selection:bg-[#fce075]/30 selection:text-yellow-100 overflow-x-hidden relative">
-      
-      {/* Three.js 3D Background */}
-      <Scene3D />
-      
-      {/* Subtle noise overlay */}
-      <div className="fixed inset-0 z-[1] pointer-events-none opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+      {/* Webcam pixel grid background */}
+      <div className="fixed inset-0 z-0">
+        <WebcamPixelGrid
+          gridCols={60}
+          gridRows={40}
+          maxElevation={50}
+          motionSensitivity={0.25}
+          elevationSmoothing={0.2}
+          colorMode="webcam"
+          backgroundColor="#030303"
+          mirror={true}
+          gapRatio={0.05}
+          invertColors={false}
+          darken={0.6}
+          borderColor="#ffffff"
+          borderOpacity={0.06}
+          className="w-full h-full"
+        />
+        {/* Gradient overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 pointer-events-none" />
+      </div>
 
       {/* Navbar */}
       <nav className="sticky top-0 w-full z-50 border-b border-white/5 bg-[#010101]/60 backdrop-blur-xl supports-[backdrop-filter]:bg-[#010101]/40 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
         <div className="max-w-7xl mx-auto px-6 h-[65px] flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-6 h-6 rounded bg-[#fce075]/10 flex items-center justify-center border border-[#fce075]/30 shadow-[0_0_15px_rgba(252,224,117,0.2)] group-hover:rotate-90 transition-transform duration-300">
+            <div onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="flex items-center gap-3 group cursor-pointer">
+              <div className="w-6 h-6 rounded bg-[#fce075]/10 flex items-center justify-center border border-[#fce075]/20 shadow-[0_0_15px_rgba(252,224,117,0.2)] group-hover:rotate-90 transition-transform duration-300">
                  <Terminal className="w-3.5 h-3.5 text-[#fce075]" />
               </div>
               <span className="text-[15px] tracking-widest uppercase font-black text-white group-hover:text-[#fce075] transition-colors">
                 Axiom
               </span>
-            </Link>
+            </div>
             
             <div className="hidden md:flex items-center gap-8 text-[11px] font-extrabold uppercase tracking-[0.2em] text-white/40">
               <a href="#features" className="hover:text-white transition-colors relative after:absolute after:-bottom-2 after:left-0 after:w-0 after:h-0.5 after:bg-[#fce075] hover:after:w-full after:transition-all">Features</a>
@@ -202,14 +217,6 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
           </div>
           
           <div className="flex items-center gap-4">
-            <button className="hidden md:flex items-center gap-3 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 rounded-full px-4 py-2 transition-all group shadow-inner">
-              <Search className="w-3.5 h-3.5 text-white/30 group-hover:text-[#fce075] transition-colors" />
-              <span className="text-[12px] font-bold text-white/30 group-hover:text-white/80 transition-colors uppercase tracking-wider">Search Cmds</span>
-              <div className="flex items-center gap-1 ml-6 text-[9px] text-[#fce075]/70 bg-[#fce075]/10 rounded px-1.5 py-0.5 border border-[#fce075]/20 font-mono">
-                <Command className="w-2.5 h-2.5" />
-                <span>K</span>
-              </div>
-            </button>
             <div className="flex items-center gap-1 text-white/40">
               <button className="p-2 hover:text-[#fce075] hover:bg-[#fce075]/10 rounded-full transition-all flex items-center justify-center">
                 <Sun className="w-[18px] h-[18px]" />
@@ -223,9 +230,9 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
         <div className="max-w-7xl mx-auto px-6 relative">
           
           {/* Hero — GSAP parallax */}
-          <div ref={heroRef} className="max-w-5xl pt-10 will-change-transform">
+          <div ref={heroRef} className="max-w-5xl pt-4 sm:pt-10 will-change-transform">
             <div ref={badgeRef} style={{ opacity: 0 }}>
-              <div className="inline-flex items-center border border-[#fce075]/40 bg-[#0a0a0a]/80 backdrop-blur-md rounded-full px-5 py-2 mb-12 shadow-[0_0_25px_rgba(252,224,117,0.2)]">
+              <div className="inline-flex items-center border border-[#fce075]/40 bg-[#0a0a0a]/80 backdrop-blur-md rounded-full px-5 py-2 mb-6 sm:mb-12 shadow-[0_0_25px_rgba(252,224,117,0.2)]">
                 <span className="relative flex h-2.5 w-2.5 mr-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -239,7 +246,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
             <h1 
               ref={h1Ref}
               style={{ opacity: 0 }}
-              className="text-6xl md:text-8xl lg:text-[100px] font-black tracking-tighter text-[#ffffff] leading-[0.95] mb-10"
+              className="text-5xl sm:text-6xl md:text-8xl lg:text-[100px] font-black tracking-tighter text-[#ffffff] leading-[0.95] mb-6 sm:mb-10 max-w-[100vw] break-words"
             >
               Execute <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40">precision trades,</span><br className="hidden md:block" />
               with absolute <span className="italic text-transparent bg-clip-text bg-gradient-to-br from-[#fce075] to-orange-400 animate-[glowPulse_4s_ease-in-out_infinite]">clarity.</span>
@@ -248,19 +255,19 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
             <p
               ref={subRef}
               style={{ opacity: 0 }}
-              className="text-xl md:text-2xl text-white/50 mb-16 max-w-3xl font-medium leading-[1.6]"
+              className="text-lg sm:text-xl md:text-2xl text-white/50 mb-8 sm:mb-16 max-w-3xl font-medium leading-[1.6]"
             >
-              Aggregate order flow, decipher macro narratives with AI, and execute with perfect mathematical edge. The unfair advantage institutional traders hide.
+              Aggregate order flow, route execution vectors, and execute with perfect mathematical edge. The true institutional framework.
             </p>
 
             <div 
               ref={ctaRef}
               style={{ opacity: 0 }}
-              className="flex flex-col sm:flex-row items-center gap-6 mb-32 relative z-20"
+              className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-16 sm:mb-32 relative z-20"
             >
               <button
                 onClick={onOpenTerminal}
-                className="w-full sm:w-auto px-10 py-5 bg-gradient-to-b from-[#fce075] to-[#dca31f] text-black uppercase tracking-[0.15em] font-black text-[14px] rounded-xl transition-all flex items-center justify-center gap-3 relative overflow-hidden group border border-[#fce075]/50 cursor-pointer hover:scale-105 hover:shadow-[0_0_40px_rgba(252,224,117,0.4)] active:scale-95"
+                className="w-full sm:w-auto px-6 sm:px-10 py-4 sm:py-5 bg-gradient-to-b from-[#fce075] to-[#dca31f] text-black uppercase tracking-[0.15em] font-black text-[14px] rounded-xl transition-all flex items-center justify-center gap-3 relative overflow-hidden group border border-[#fce075]/50 cursor-pointer hover:scale-105 hover:shadow-[0_0_40px_rgba(252,224,117,0.4)] active:scale-95 flex-shrink-0"
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"/>
                 <span className="relative z-10">Launch Terminal</span>
@@ -268,7 +275,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
               </button>
               <a 
                 href="#features"
-                className="w-full sm:w-auto px-10 py-5 bg-white/[0.03] border border-white/10 text-white font-extrabold uppercase tracking-[0.15em] text-[14px] rounded-xl transition-all flex items-center justify-center shadow-2xl backdrop-blur-md cursor-pointer hover:scale-105 hover:bg-white/[0.1] active:scale-95"
+                className="w-full sm:w-auto px-6 sm:px-10 py-4 sm:py-5 bg-white/[0.03] border border-white/10 text-white font-extrabold uppercase tracking-[0.15em] text-[14px] rounded-xl transition-all flex items-center justify-center shadow-2xl backdrop-blur-md cursor-pointer hover:scale-105 hover:bg-white/[0.1] active:scale-95 flex-shrink-0"
               >
                 Explore Intel
               </a>
@@ -279,7 +286,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
           <div 
             ref={dashRef}
             style={{ opacity: 0 }}
-            className="w-full bg-[#050505]/80 backdrop-blur-3xl rounded-3xl border border-white/[0.08] shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] overflow-hidden flex flex-col font-sans relative will-change-transform"
+            className="w-full bg-[#050505] rounded-xl border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] overflow-hidden flex flex-col font-sans relative will-change-transform"
           >
             {/* Top Shine */}
             <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#fce075]/50 to-transparent"></div>
@@ -306,7 +313,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
               
               {/* Left Column */}
               <div className="flex flex-col gap-6 relative z-10">
-                <div className="flex-1 bg-white/[0.02] border border-white/5 rounded-2xl p-6 relative group transition-all duration-300 shadow-xl backdrop-blur-xl hover:border-white/20 hover:-translate-y-1">
+                <div className="flex-1 bg-[#000] border border-white/10 rounded-lg p-6 relative group transition-all duration-300 shadow-xl hover:border-white/30">
                    <div className="flex items-center gap-3 mb-6">
                      <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
                        <Globe className="w-4 h-4 text-blue-400" />
@@ -332,7 +339,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
                    </div>
                 </div>
                 
-                <div className="h-[240px] bg-white/[0.02] border border-white/5 rounded-2xl p-6 group transition-all duration-300 shadow-xl backdrop-blur-xl relative overflow-hidden hover:border-[#fce075]/30 hover:-translate-y-1">
+                <div className="h-[240px] bg-[#000] border border-white/10 rounded-lg p-6 group transition-all duration-300 shadow-xl relative overflow-hidden hover:border-[#fce075]/30">
                   <div className="absolute inset-0 bg-gradient-to-t from-[#fce075]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="flex items-center gap-3 mb-4 relative z-10">
                     <div className="w-8 h-8 rounded-lg bg-[#fce075]/10 flex items-center justify-center border border-[#fce075]/20">
@@ -356,7 +363,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
 
               {/* Center & Right Column */}
               <div className="hidden md:flex flex-col col-span-2 gap-6 relative z-10">
-                <div className="flex-[2] bg-white/[0.02] border border-white/5 rounded-2xl p-6 relative group transition-all duration-300 flex flex-col shadow-xl backdrop-blur-xl hover:border-white/20">
+                <div className="flex-[2] bg-[#000] border border-white/10 rounded-lg p-6 relative group transition-all duration-300 flex flex-col shadow-xl hover:border-white/30">
                    <div className="flex items-center justify-between mb-6">
                      <div className="flex items-center gap-3">
                        <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
@@ -373,7 +380,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
                      <div className="absolute top-0 right-0 p-4 opacity-20"><Code2 className="w-20 h-20 text-white" /></div>
                      
                      <div style={{ opacity: codeLines >= 0 ? 1 : 0, transition: "opacity 0.3s" }}><span className="text-purple-400 font-bold">async function</span> <span className="text-blue-300">executeMarketEdge</span>() {'{'}</div>
-                     <div style={{ opacity: codeLines >= 1 ? 1 : 0, transition: "opacity 0.3s" }}>{'  '}const narrative = <span className="text-[#fce075]">await</span> ai.getSentiment(&quot;FED_FUNDS&quot;);</div>
+                     <div style={{ opacity: codeLines >= 1 ? 1 : 0, transition: "opacity 0.3s" }}>{'  '}const narrative = <span className="text-[#fce075]">await</span> models.getSentiment(&quot;FED_FUNDS&quot;);</div>
                      <div style={{ opacity: codeLines >= 2 ? 1 : 0, transition: "opacity 0.3s" }}>{'  '}if (narrative.isHawkish &amp;&amp; structure.isBroken) {'{'}</div>
                      <div style={{ opacity: codeLines >= 3 ? 1 : 0, transition: "opacity 0.3s" }}>{'    '}<span className="text-blue-400 font-bold">executeShort</span>({'{'} target: &quot;NQ&quot;, size: &quot;2%&quot; {'}'});</div>
                      <div style={{ opacity: codeLines >= 4 ? 1 : 0, transition: "opacity 0.3s" }}>{'  }'}</div>
@@ -381,14 +388,14 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
                      
                      <br/>
                      <div style={{ opacity: codeLines >= 5 ? 1 : 0, transition: "opacity 0.3s" }} className="text-white/40 border-l-2 border-[#fce075]/40 pl-4 mt-2">
-                       // AI Output: High probability mean reversion setup detected. Wait for liquidity sweep.
+                       // Model Output: High probability mean reversion setup detected. Wait for liquidity sweep.
                      </div>
                      <div className="inline-block w-2.5 h-4 bg-[#fce075] ml-1 align-middle mt-2 animate-[blink_1s_steps(1)_infinite]" />
                    </div>
                 </div>
 
                 <div className="h-[200px] grid grid-cols-2 gap-6">
-                  <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 shadow-xl backdrop-blur-xl relative overflow-hidden hover:border-cyan-400/30 hover:-translate-y-1">
+                  <div className="bg-[#000] border border-white/10 rounded-lg p-6 flex flex-col justify-between group transition-all duration-300 shadow-xl relative overflow-hidden hover:border-cyan-400/30">
                      <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                      <div className="flex items-center gap-3 mb-2 relative z-10">
                         <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20">
@@ -401,7 +408,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
                         <div className="h-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] animate-[dataStream_5s_ease-in-out_infinite]" />
                       </div>
                   </div>
-                  <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300 shadow-xl backdrop-blur-xl relative overflow-hidden hover:border-red-500/30 hover:-translate-y-1">
+                  <div className="bg-[#000] border border-white/10 rounded-lg p-6 flex flex-col justify-between group transition-all duration-300 shadow-xl relative overflow-hidden hover:border-red-500/30">
                      <div className="absolute inset-0 bg-gradient-to-t from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                      <div className="flex items-center gap-3 mb-2 relative z-10">
                         <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center border border-red-500/20">
@@ -438,26 +445,27 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
            </p>
          </div>
 
-         <div id="features" className="grid grid-cols-1 md:grid-cols-3 gap-10 border-t border-white/5 pt-20 relative">
-            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-            
+         <div id="features" className="grid grid-cols-1 md:grid-cols-3 bg-[#030303] border border-white/10 rounded-xl overflow-hidden shadow-2xl relative">
             {[ 
                { icon: Globe, title: "Live Order Flow", desc: "Direct market data integration with sub-millisecond parsing and analysis logic built right in." },
-               { icon: Cpu, title: "AI Narrative Core", desc: "Extract sentiment directly from fed speeches, news drops, and financial events locally." },
+               { icon: Cpu, title: "Quantitative Core", desc: "Extract momentum and stat-arb setups locally from advanced probabilistic engines." },
                { icon: Zap, title: "Terminal Speed", desc: "Built from the ground up for maximum visual performance without web bloat." }
             ].map((item, i) => (
               <div 
                  key={i} 
                  ref={setFeatureCard(i)}
                  style={{ opacity: 0 }}
-                 className="group p-8 rounded-3xl bg-white/[0.01] hover:bg-white/[0.03] border border-white/[0.02] hover:border-white/10 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 relative overflow-hidden will-change-transform"
+                 className="group p-10 md:p-12 border-b md:border-b-0 md:border-r border-white/10 last:border-0 hover:bg-[#0a0a0a] transition-colors duration-500 relative flex flex-col will-change-transform"
               >
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-[#fce075]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="w-14 h-14 bg-[#111] shadow-inner border border-white/10 rounded-2xl flex items-center justify-center mb-8 group-hover:border-[#fce075]/30 transition-colors">
-                  <item.icon className="w-6 h-6 text-white/50 group-hover:text-[#fce075] transition-colors duration-300" />
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-white/20 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                <div className="flex items-center justify-between mb-12">
+                  <div className="w-12 h-12 bg-black border border-white/10 rounded items-center justify-center flex shrink-0 group-hover:border-white/30 transition-colors shadow-inner">
+                    <item.icon className="w-5 h-5 text-white/40 group-hover:text-white transition-colors duration-300" />
+                  </div>
+                  <span className="text-[10px] font-mono text-white/20 font-bold uppercase tracking-widest">Sys_0{i + 1}</span>
                 </div>
-                <h3 className="text-xl font-black text-white mb-4 tracking-tight">{item.title}</h3>
-                <p className="text-[15px] text-white/50 leading-[1.7] group-hover:text-white/80 transition-colors">{item.desc}</p>
+                <h3 className="text-xl font-bold text-white mb-4 tracking-tight">{item.title}</h3>
+                <p className="text-[14px] text-white/50 leading-[1.8] font-medium group-hover:text-white/70 transition-colors">{item.desc}</p>
               </div>
             ))}
          </div>
@@ -474,7 +482,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-2xl bg-[#fce075]/5 blur-[100px] rounded-full -z-10" />
           <h2 className="text-5xl md:text-[60px] font-black text-[#fce075] mb-8 tracking-tighter">Anybody can trade.</h2>
           <p className="text-white/60 font-medium max-w-3xl mx-auto text-[18px] leading-relaxed">
-            Native support for Crypto, FX & Equities, offering intuitive, convenient and extensive intelligence for <span className="text-white font-bold">retail traders, quant developers, and AI agents.</span>
+            Native support for Crypto, FX & Equities, offering intuitive, convenient and extensive intelligence for <span className="text-white font-bold">retail traders, quant developers, and professional firms.</span>
           </p>
           <div data-toggles className="flex items-center justify-center gap-6 mt-12 text-[15px] font-black text-white/30 tracking-[0.2em] uppercase">
             <span className="text-[#fce075] cursor-pointer transition-colors shadow-[0_0_20px_rgba(252,224,117,0.4)] px-4 py-2 rounded-full border border-[#fce075]/20 bg-[#fce075]/10 hover:scale-110 active:scale-95 transition-transform">Trader</span>
@@ -490,7 +498,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
           <div 
              ref={codeBlockRef}
              style={{ opacity: 0 }}
-             className="bg-[#0c0c0c] border border-white/10 rounded-3xl p-8 font-mono text-[14px] text-white/70 shadow-[0_30px_60px_rgba(0,0,0,0.8)] relative overflow-hidden group hover:border-[#fce075]/30 transition-colors will-change-transform"
+             className="bg-[#0c0c0c] border border-white/10 rounded-xl p-8 font-mono text-[14px] text-white/70 shadow-[0_10px_40px_rgba(0,0,0,0.8)] relative overflow-hidden group hover:border-[#fce075]/30 transition-colors will-change-transform"
           >
              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
              <div className="absolute top-6 right-6 text-white/20 hover:text-[#fce075] cursor-pointer transition-colors">
@@ -525,7 +533,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
             <p className="text-white/50 text-[18px] mb-12 leading-relaxed font-medium">It is real-time processing, with additional features seamlessly composing into the execution without bloated syntax.</p>
             
             <ul className="space-y-5 text-[15px] text-white/70 font-semibold tracking-wide">
-              {["Live market data indexing", "Deep sentiment analysis (Powered by AI)", "Execution blocks", "Risk matrices", "Dynamic Cards", "Custom strategy anchors"].map((text, i) => (
+              {["Live market data indexing", "Deep predictive analytics (Powered by local models)", "Execution blocks", "Risk matrices", "Dynamic Cards", "Custom strategy anchors"].map((text, i) => (
                 <li 
                   key={i}
                   className="flex items-center gap-4 cursor-pointer transition-all hover:translate-x-2.5 hover:text-white"
@@ -585,7 +593,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
            <div 
              ref={setProCard(1)}
              style={{ opacity: 0 }}
-             className="bg-[#0c0c0c] border border-white/10 rounded-3xl p-10 overflow-hidden relative min-h-[350px] flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-500 group hover:-translate-y-2.5 hover:scale-[1.02] will-change-transform"
+             className="bg-[#0c0c0c] border border-white/10 rounded-xl p-10 overflow-hidden relative min-h-[350px] flex flex-col shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition-all duration-500 group will-change-transform"
            >
              <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
              <h3 className="text-[28px] font-black text-white mb-4 tracking-tight relative z-10">A truly composable terminal.</h3>
@@ -598,7 +606,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
                  { t: "axiom-data", d: "Raw tick and sentiment streams." },
                  { t: "axiom-core", d: "Headless logic engine." },
                  { t: "axiom-ui", d: "UI components." },
-                 { t: "axiom-ai", d: "Local LLM extensions." }
+                 { t: "axiom-models", d: "Local execution models." }
                ].map((item, i) => (
                  <div 
                    key={i}
@@ -615,7 +623,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
            <div 
              ref={setProCard(2)}
              style={{ opacity: 0 }}
-             className="bg-[#0c0c0c] border border-white/10 rounded-3xl p-10 overflow-hidden relative min-h-[350px] flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-500 group hover:-translate-y-2.5 hover:scale-[1.02] will-change-transform"
+             className="bg-[#0c0c0c] border border-white/10 rounded-xl p-10 overflow-hidden relative min-h-[350px] flex flex-col shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition-all duration-500 group will-change-transform"
            >
              <h3 className="text-[28px] font-black text-white mb-4 tracking-tight">Integrates everywhere.</h3>
              <p className="text-white/50 text-[16px] leading-[1.8] mb-8 font-medium">
@@ -645,14 +653,14 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
            <div 
              ref={setProCard(3)}
              style={{ opacity: 0 }}
-             className="bg-[#0c0c0c] border border-white/10 rounded-3xl p-10 overflow-hidden relative min-h-[350px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-500 hover:-translate-y-2.5 hover:scale-[1.02] will-change-transform"
+             className="bg-[#0c0c0c] border border-white/10 rounded-xl p-10 overflow-hidden relative min-h-[350px] shadow-[0_10px_40px_rgba(0,0,0,0.5)] transition-all duration-500 will-change-transform"
            >
              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgoJCTxjaXJjbGUgY3g9IjIiIGN5PSIyIiByPSIxIiBmaWxsPSIjZWE1ODBjIi8+Cjwvc3ZnPg==')] opacity-[0.15] mix-blend-screen mix-blend-plus-lighter"></div>
              
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-orange-600/20 blur-[80px] rounded-full z-0 animate-[glowRotate_10s_ease-in-out_infinite]" />
              
              {/* Abstract Mockup Back Window */}
-             <div className="absolute top-8 left-8 w-[85%] h-[240px] bg-[#1a140d]/90 rounded-2xl border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden backdrop-blur-xl z-10 animate-[floatUp_8s_ease-in-out_infinite]">
+             <div className="absolute top-8 left-8 w-[85%] h-[240px] bg-[#1a140d] rounded-lg border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden z-10 animate-[floatUp_8s_ease-in-out_infinite]">
                 <div className="text-white/40 text-[11px] font-mono font-bold tracking-widest uppercase px-5 py-3.5 border-b border-white/10 flex items-center justify-between">My Contexts</div>
                 <div className="p-4 space-y-2 text-[14px] text-white/70 font-medium">
                   {["Spot Markets", "Derivatives", "FX Majors"].map((item, i) => (
@@ -668,7 +676,7 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
              </div>
 
              {/* Abstract Mockup Front Window */}
-             <div className="absolute top-36 right-4 w-[85%] h-[220px] backdrop-blur-2xl bg-[#080808]/90 rounded-2xl border border-white/20 shadow-[0_40px_80px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden z-20 animate-[floatDown_9s_ease-in-out_infinite]">
+             <div className="absolute top-36 right-4 w-[85%] h-[220px] bg-[#080808] rounded-lg border border-white/20 shadow-[0_20px_40px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden z-20 animate-[floatDown_9s_ease-in-out_infinite]">
                 <div className="text-white/60 text-[11px] font-mono font-bold tracking-widest uppercase px-5 py-3.5 border-b border-white/10 bg-[#111]">Execution Editor</div>
                 <div className="p-6 font-mono text-[13px] text-white/80 leading-[2] relative">
                   <div className="absolute top-0 right-0 p-4 opacity-10"><Code2 className="w-16 h-16 text-white" /></div>
@@ -688,12 +696,12 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
       <footer className="relative z-10 border-t border-white/10 bg-[#000] py-16">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col items-center md:items-start">
-             <Link href="/" className="flex items-center gap-3 text-white mb-2 group">
+             <div onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="flex items-center gap-3 text-white mb-2 group cursor-pointer">
                <div className="w-6 h-6 rounded bg-[#fce075]/10 flex items-center justify-center border border-[#fce075]/30 group-hover:rotate-180 transition-transform duration-500">
                  <Terminal className="w-3.5 h-3.5 text-[#fce075]" />
                </div>
                <span className="text-base font-black tracking-[0.2em] uppercase group-hover:text-[#fce075] transition-colors">Axiom Terminal</span>
-             </Link>
+             </div>
              <span className="text-[11px] text-white/40 uppercase tracking-[0.2em] font-mono font-bold mt-2">
                 Engineered by <a href="https://softpulser.com" target="_blank" rel="noreferrer" className="text-white hover:text-[#fce075] transition-colors underline underline-offset-4 decoration-white/20">Softpulser</a>
              </span>
@@ -743,6 +751,27 @@ export default function LandingPage({ onOpenTerminal }: LandingPageProps) {
           scroll-behavior: initial !important;
         }
       `}</style>
+      
+      {/* Cookie Banner */}
+      {showCookies && (
+        <div className="fixed bottom-6 left-6 right-6 md:left-auto md:max-w-md bg-[#0a0a0a]/90 backdrop-blur-xl border border-white/10 p-6 rounded-2xl z-[100] shadow-[0_20px_40px_rgba(0,0,0,0.8)] flex flex-col gap-4">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-[#fce075]/10 flex items-center justify-center border border-[#fce075]/20 shrink-0">
+              <ShieldAlert className="w-5 h-5 text-[#fce075]" />
+            </div>
+            <div>
+              <h4 className="text-white font-bold mb-1">Cookie Policy</h4>
+              <p className="text-white/50 text-sm leading-relaxed">
+                We use cookies to analyze terminal performance and secure your session. By continuing, you agree to our use of cookies.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setShowCookies(false)} className="flex-1 bg-white text-black font-bold py-2.5 rounded-lg hover:bg-white/90 transition-colors text-sm">Accept All</button>
+            <button onClick={() => setShowCookies(false)} className="flex-1 bg-white/5 text-white font-bold py-2.5 rounded-lg hover:bg-white/10 transition-colors border border-white/10 text-sm">Decline</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

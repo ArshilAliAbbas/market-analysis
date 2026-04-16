@@ -24,12 +24,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col h-screen max-h-screen overflow-hidden bg-[#07090c] text-text-primary max-w-[2560px] mx-auto w-full font-sans relative">
-      {/* Subtle ambient background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#fce075]/[0.02] blur-[200px] rounded-full" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/[0.02] blur-[150px] rounded-full" />
-      </div>
+    <div className="flex flex-col h-screen max-h-screen overflow-hidden bg-black text-text-primary max-w-[2560px] mx-auto w-full font-sans relative">
+      {/* Subtle dark ambient texture if needed, removed glowing orbs for professional look */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CgkJPHBhdGggZD0iMTAwIDBoMjB2MjBIMHoiIGZpbGw9Im5vbmUiLz4KCQk8cGF0aCBkPSJNMCAxOS41aDIwTTE5LjUgMHYtMjAiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAyKSIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjwvc3ZnPg==')] opacity-[0.15]" />
       
       <CriticalBanner alert={criticalBanner} onDismiss={dismissBanner} />
       

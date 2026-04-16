@@ -100,9 +100,8 @@ export default function CurrentMarketPlay() {
     <Card className="flex flex-col h-full shrink-0 border-card-border overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-divider bg-surface-sunken/30">
         <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted flex items-center gap-2">
-          <Target className="w-3.5 h-3.5" /> Current Market Play
+          <Target className="w-3.5 h-3.5" /> Quantitative Edge
         </h2>
-        <div className="w-1.5 h-1.5 rounded-full bg-ai-primary animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
       </div>
 
       <div className="p-4 flex-1 flex flex-col justify-center overflow-hidden">
@@ -110,7 +109,7 @@ export default function CurrentMarketPlay() {
           <div className="flex flex-col items-center justify-center gap-3 text-text-tertiary h-full">
             <Loader2 className="w-4 h-4 animate-spin" />
             <span className="text-[9px] font-bold uppercase tracking-[0.2em]">
-              Generating trade idea...
+              Processing algorithmic vectors...
             </span>
           </div>
         ) : !play ? (

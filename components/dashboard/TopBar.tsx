@@ -49,7 +49,7 @@ export default function TopBar({ alerts, unreadCount, onMarkAllRead, onClearAll,
   };
 
   return (
-    <header className="flex items-center justify-between bg-[#0d1117]/90 backdrop-blur-md border border-white/[0.06] rounded-lg px-4 py-2 shrink-0 h-12 relative z-40 shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
+    <header className="flex items-center justify-between bg-black backdrop-blur-md border border-white/[0.06] rounded-lg px-4 py-2 shrink-0 h-12 relative z-40 shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-md bg-[#fce075]/10 flex items-center justify-center border border-[#fce075]/20 shadow-[0_0_10px_rgba(252,224,117,0.1)]">
@@ -90,7 +90,7 @@ export default function TopBar({ alerts, unreadCount, onMarkAllRead, onClearAll,
         <div className="flex gap-1.5">
           <Badge variant="bullish">FX OPEN</Badge>
           <Badge variant="default">EQ CLOSED</Badge>
-          <Badge variant="ai">CRYPTO 24/7</Badge>
+          <Badge variant="bullish">CRYPTO 24/7</Badge>
         </div>
         
         <div className="w-px h-4 bg-white/[0.06]" />
@@ -123,7 +123,7 @@ export default function TopBar({ alerts, unreadCount, onMarkAllRead, onClearAll,
 
             {/* Notification Dropdown Panel */}
             {showPanel && (
-              <div className="absolute top-full right-0 mt-2 w-[380px] max-h-[480px] bg-[#0d1117] border border-white/[0.08] rounded-lg shadow-[0_20px_60px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden z-50 backdrop-blur-xl">
+              <div className="absolute top-full right-0 mt-2 w-[380px] max-h-[480px] bg-black border border-white/[0.08] rounded-lg shadow-[0_20px_60px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden z-50 backdrop-blur-xl">
                 {/* Panel Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">
