@@ -149,7 +149,36 @@ export const WebcamPixelGrid: React.FC<WebcamPixelGridProps> = ({
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
       }
+      cancelAnimationFrame(animationRef.current);
+    };
+  }, [requestCameraAccess]);
+
+  // Pause camera when tab is hidden, resume when visible again
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Stop the render loop
+        cancelAnimationFrame(animationRef.current);
+        // Stop the camera stream to free the hardware
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach((track) => track.stop());
+          streamRef.current = null;
+        }
+        if (videoRef.current) {
+          videoRef.current.srcObject = null;
+        }
+        setIsReady(false);
+      } else {
+        // User returned — restart camera
+        requestCameraAccess();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [requestCameraAccess]);
 
