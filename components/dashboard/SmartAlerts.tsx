@@ -69,7 +69,7 @@ export function getAlertIcon(type: AlertType, size = "w-3.5 h-3.5") {
     case "News": return <AlertTriangle className={`${size} text-bearish`} />;
     case "Volatility": return <Activity className={`${size} text-caution`} />;
     case "Breakout": return <TrendingUp className={`${size} text-bullish`} />;
-    case "Unusual": return <Zap className={`${size} text-ai-primary`} />;
+    case "Unusual": return <Zap className={`${size} text-accent`} />;
   }
 }
 
@@ -78,7 +78,7 @@ export function getAlertAccent(type: AlertType) {
     case "News": return "bg-bearish";
     case "Volatility": return "bg-caution";
     case "Breakout": return "bg-bullish";
-    case "Unusual": return "bg-ai-primary";
+    case "Unusual": return "bg-accent";
   }
 }
 
@@ -135,40 +135,43 @@ export function CriticalBanner({ alert, onDismiss }: { alert: SmartAlert | null;
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="overflow-hidden shrink-0"
+          className="overflow-hidden shrink-0 mb-3"
         >
           <div
             onClick={onDismiss}
-            className="flex items-center gap-3 px-4 py-2 bg-bearish/[0.06] border border-bearish/20 rounded cursor-pointer hover:bg-bearish/[0.08] transition-colors relative"
+            className="flex items-center gap-4 px-5 py-3 bg-bearish/10 border border-bearish/30 rounded-none cursor-crosshair hover:bg-bearish/[0.15] transition-all relative overflow-hidden group"
           >
             {/* Left accent stripe */}
-            <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-bearish rounded-l" />
-
-            <div className="shrink-0">
-              {getAlertIcon(alert.type, "w-4 h-4")}
+            <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-bearish" />
+            <div className="absolute top-0 right-0 px-2 py-0.5 bg-bearish text-[8px] font-black text-white italic tracking-[0.2em]">
+              SYS_ALERT_CRIT
             </div>
 
-            <div className="flex-1 min-w-0 flex items-center gap-3">
-              <span className="text-[9px] font-extrabold uppercase tracking-widest text-bearish shrink-0">
+            <div className="shrink-0">
+              <AlertTriangle className="w-5 h-5 text-bearish animate-pulse" />
+            </div>
+
+            <div className="flex-1 min-w-0 flex items-center gap-4">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-bearish shrink-0 italic underline decoration-bearish/40">
                 CRITICAL
               </span>
-              <span className="text-[12px] font-bold text-text-primary truncate">
+              <span className="text-[14px] font-black text-white truncate italic uppercase tracking-tight">
                 {alert.title}
               </span>
-              <span className="text-[11px] text-text-secondary truncate hidden md:inline">
+              <span className="text-[12px] text-slate-400 truncate hidden md:inline font-mono">
                 {alert.explanation}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="flex gap-1">
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="flex gap-1.5">
                 {alert.assets.slice(0, 3).map((asset, i) => (
-                  <span key={i} className="text-[8px] uppercase font-bold text-text-secondary tracking-widest bg-white/[0.04] border border-card-border px-1 py-[1px] rounded">
+                  <span key={i} className="text-[9px] uppercase font-black text-white tracking-widest bg-bearish/20 border border-bearish/40 px-2 py-0.5 rounded-none italic">
                     {asset}
                   </span>
                 ))}
               </div>
-              <span className="text-[9px] text-text-muted font-mono">{alert.timestamp}</span>
+              <span className="text-[10px] text-bearish/60 font-mono italic">{alert.timestamp}</span>
             </div>
           </div>
         </motion.div>

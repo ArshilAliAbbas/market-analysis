@@ -99,20 +99,21 @@ export default function NewsFeed({ activeMarket = "Global Equities" }: { activeM
   });
 
   return (
-    <Card className="flex flex-col h-full flex-1">
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-divider">
-        <h2 className="text-[9px] font-bold uppercase tracking-widest text-text-muted">
-          Intelligence Feed
+    <div className="axiom-panel axiom-corner-tl border-accent/20 flex flex-col h-full flex-1 bg-card/40">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-accent/10 bg-accent/5">
+        <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-accent flex items-center gap-2">
+          <div className="w-1 h-3 bg-accent animate-pulse-accent" />
+          Intelligence Flow
         </h2>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           {filters.map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider transition-colors
+              className={`px-3 py-1 rounded-none text-[9px] font-black uppercase tracking-widest transition-all
                 ${filter === f 
-                  ? "bg-white/[0.06] text-text-primary border border-card-border" 
-                  : "text-text-tertiary hover:text-text-secondary border border-transparent"
+                  ? "bg-accent text-background shadow-[0_0_10px_rgba(6,182,212,0.3)]" 
+                  : "text-accent/40 hover:text-accent hover:bg-accent/10"
                 }`}
             >
               {f}
@@ -148,36 +149,40 @@ export default function NewsFeed({ activeMarket = "Global Equities" }: { activeM
                 {item.impact === "HIGH" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-bearish" />}
                 
                 <div className="flex gap-4">
-                  <div className="w-10 shrink-0 flex flex-col items-center data-value mt-0.5">
-                    <span className="text-xs font-bold text-text-muted">{item.timeAgo}</span>
+                  <div className="w-12 shrink-0 flex flex-col items-center data-value mt-1">
+                    <span className="text-[10px] font-black text-accent/60 italic">{item.timeAgo}</span>
+                    <div className="w-px h-full bg-accent/10 mt-2" />
                   </div>
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-2.5">
-                      {item.impact === "HIGH" && <Badge variant="high"><AlertTriangle className="w-2.5 h-2.5 mr-0.5"/>HIGH</Badge>}
-                      {item.impact === "MEDIUM" && <Badge variant="medium">MED</Badge>}
+                      {item.impact === "HIGH" && <Badge variant="high">CRITICAL</Badge>}
+                      {item.impact === "MEDIUM" && <Badge variant="medium">ELEVATED</Badge>}
                       {item.impact === "LOW" && <Badge variant="low">LOW</Badge>}
                       
                       <div className="flex gap-1 ml-1">
                         {item.assets.map((asset, i) => (
-                          <span key={i} className="text-[9px] bg-white/[0.03] border border-card-border px-1 py-[1px] rounded text-text-secondary font-bold tracking-tight">
+                          <span key={i} className="text-[9px] bg-accent/5 border border-accent/20 px-1.5 py-0.5 rounded-none text-accent font-black tracking-widest italic opacity-70">
                             {asset}
                           </span>
                         ))}
                       </div>
                     </div>
 
-                    <a href={item.url} target="_blank" rel="noreferrer" className="block text-[17px] font-extrabold tracking-tight text-text-primary mb-1.5 leading-snug group-hover:text-ai-primary transition-colors">
+                    <a href={item.url} target="_blank" rel="noreferrer" className="block text-lg font-black tracking-tight text-white mb-2 leading-tight hover:text-accent transition-colors">
                       {item.headline}
                     </a>
-                    <p className="text-[13px] text-text-secondary leading-relaxed mb-4">{item.summary}</p>
+                    <p className="text-[13px] text-slate-400 font-medium leading-relaxed mb-5">{item.summary}</p>
                     
-                    <div className="bg-ai-subtle border border-ai-primary/20 rounded p-3.5 text-[12px]">
-                      <div className="flex gap-2.5 items-start">
-                        <Command className="w-3.5 h-3.5 text-ai-primary shrink-0 mt-0.5" />
-                        <div>
-                          <span className="text-ai-primary text-[9px] font-extrabold uppercase tracking-widest block mb-1">AI Analysis</span>
-                          <p className="text-text-primary text-[13px] leading-relaxed font-medium">
+                    <div className="bg-accent/[0.03] border border-accent/20 rounded-none p-4 text-[12px] relative overflow-hidden group/analysis">
+                      <div className="absolute top-0 right-0 px-2 py-0.5 bg-accent/10 border-b border-l border-accent/20 text-[8px] font-black text-accent/40 tracking-widest">
+                        CORE_LOG_PRC
+                      </div>
+                      <div className="flex gap-3 items-start relative z-10">
+                        <Command className="w-4 h-4 text-accent animate-pulse-accent shrink-0 mt-0.5" />
+                        <div className="flex flex-col gap-1">
+                          <span className="text-accent text-[9px] font-black uppercase tracking-[0.2em] block">Synthea_Intelligence_Node</span>
+                          <p className="text-slate-200 text-[13px] font-mono leading-relaxed">
                             {item.explanation || "AI insight is currently syncing and unavailable."}
                           </p>
                         </div>
@@ -190,6 +195,6 @@ export default function NewsFeed({ activeMarket = "Global Equities" }: { activeM
           </AnimatePresence>
         )}
       </div>
-    </Card>
+    </div>
   );
 }

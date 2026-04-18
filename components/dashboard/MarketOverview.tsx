@@ -105,9 +105,12 @@ export default function MarketOverview() {
   const unselectedAssets = MASTER_ASSETS.filter(ma => !watchlist.find(w => w.symbol === ma.symbol));
 
   return (
-    <Card className="flex flex-col h-full relative">
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-divider">
-        <h2 className="text-[9px] font-bold uppercase tracking-widest text-text-muted">Watchlist</h2>
+    <div className="axiom-panel axiom-corner-tl border-accent/20 flex flex-col h-full relative overflow-hidden bg-card/40">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-accent/10 bg-accent/5">
+        <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-accent flex items-center gap-2">
+          <div className="w-1 h-3 bg-accent animate-pulse-accent" />
+          Market Intelligence
+        </h2>
         
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
@@ -166,11 +169,11 @@ export default function MarketOverview() {
 
               return (
                 <div key={category} className="flex flex-col mb-1.5">
-                  <h3 className="text-[9px] uppercase font-bold tracking-[0.2em] px-4 py-1.5 bg-[#080808] text-text-tertiary border-y border-divider sticky top-0 z-10 w-full">
-                    {category}
+                  <h3 className="text-[9px] uppercase font-black tracking-[0.3em] px-4 py-2 bg-accent/10 text-accent border-y border-accent/20 sticky top-0 z-10 w-full italic">
+                    {category} :: TERMINAL_INPUT
                   </h3>
                   
-                  <div className="flex flex-col">
+                  <div className="flex flex-col divide-y divide-accent/5">
                     {catWatchlist.map((asset) => {
                       const liveData = data.find(d => d.symbol === asset.display || d.symbol === asset.symbol);
                       if (!liveData) return null;
@@ -186,7 +189,7 @@ export default function MarketOverview() {
                       return (
                         <div 
                           key={asset.symbol} 
-                          className="group relative flex items-center px-4 py-2 border-b border-divider hover:bg-white/[0.03] transition-all cursor-pointer overflow-hidden"
+                          className="group relative flex items-center px-4 py-3 hover:bg-accent/5 transition-all cursor-crosshair overflow-hidden"
                         >
                           <button 
                             onClick={(e) => { e.stopPropagation(); removeAsset(asset.symbol); }}
@@ -226,6 +229,6 @@ export default function MarketOverview() {
           </div>
         )}
       </div>
-    </Card>
+    </div>
   );
 }

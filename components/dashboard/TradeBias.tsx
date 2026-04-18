@@ -132,19 +132,24 @@ export default function TradeBias({ activeMarket = "Global Equities" }: { active
   const currentSetup = plan ? plan[activeTab] : null;
 
   return (
-    <Card className="flex flex-col h-full overflow-hidden border-card-border relative">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-divider bg-surface-sunken/40">
-        <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted flex items-center gap-2">
-          <Target className="w-3.5 h-3.5" /> Trade Planning
+    <div className="axiom-panel axiom-corner-tl border-accent/20 flex flex-col h-full overflow-hidden bg-card/40 relative">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-accent/10 bg-accent/5">
+        <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-accent flex items-center gap-2">
+          <Target className="w-4 h-4 text-accent animate-pulse-accent" />
+          Tactical Matrix
         </h2>
-        {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin text-text-tertiary" />}
+        <div className="flex items-center gap-2">
+          {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin text-accent" />}
+          <div className="w-px h-3 bg-accent/20" />
+          <span className="text-[8px] font-black text-accent/40 tracking-widest italic uppercase">SY_STRAT_01</span>
+        </div>
       </div>
 
       {/* Control Bar: Strategy & Timeframe */}
-      <div className="bg-[#0B0F14] border-b border-divider p-3 flex flex-col gap-2.5">
-        <div className="relative flex bg-[#111] rounded-full p-1 border border-[#222] w-full">
+      <div className="bg-background/20 border-b border-accent/10 p-3 flex flex-col gap-2.5">
+        <div className="relative flex bg-accent/5 rounded-none p-1 border border-accent/10 w-full group/strat">
           <div 
-            className="absolute top-1 bottom-1 bg-[#1a1a1a] rounded-full shadow-[0_0_8px_rgba(255,255,255,0.05)] border border-[#333] transition-all duration-300 ease-out z-0" 
+            className="absolute top-1 bottom-1 bg-accent/20 rounded-none shadow-[0_0_15px_rgba(6,182,212,0.1)] border border-accent/30 transition-all duration-300 ease-out z-0" 
             style={{ 
               width: `calc(100% / 4 - 2px)`, 
               left: `calc(${["Breakout", "Reversal", "Trend", "Range"].indexOf(strategy === "Trend Continuation" ? "Trend" : strategy)} * (100% / 4) + 1px)`,
@@ -158,20 +163,19 @@ export default function TradeBias({ activeMarket = "Global Equities" }: { active
                 key={s}
                 onClick={() => setStrategy(actualStrategy)}
                 className={cn(
-                  "relative flex-1 py-1.5 text-[9px] uppercase font-bold tracking-widest z-10 transition-colors duration-200 flex items-center justify-center gap-1.5",
-                  isActive ? "text-white" : "text-[#777] hover:text-[#aaa]"
+                  "relative flex-1 py-1.5 text-[9px] uppercase font-black tracking-widest z-10 transition-colors duration-200 flex items-center justify-center gap-1.5 italic",
+                  isActive ? "text-accent" : "text-white/30 hover:text-white/60"
                 )}
               >
-                {isActive && <div className="w-1.5 h-1.5 rounded-full bg-bullish shadow-[0_0_5px_rgba(74,222,128,0.5)]" />}
                 {s}
               </button>
             );
           })}
         </div>
         
-        <div className="relative flex bg-[#111] rounded-full p-1 border border-[#222] w-full">
+        <div className="relative flex bg-accent/5 rounded-none p-1 border border-accent/10 w-full group/time">
           <div 
-            className="absolute top-1 bottom-1 bg-[#1a1a1a] rounded-full shadow-[0_0_8px_rgba(255,255,255,0.05)] border border-[#333] transition-all duration-300 ease-out z-0" 
+            className="absolute top-1 bottom-1 bg-accent/20 rounded-none shadow-[0_0_15px_rgba(6,182,212,0.1)] border border-accent/30 transition-all duration-300 ease-out z-0" 
             style={{ 
               width: `calc(100% / 3 - 2.66px)`, 
               left: `calc(${["scalp", "intraday", "swing"].indexOf(timeframe === "scalping" ? "scalp" : timeframe)} * (100% / 3) + 1px)`,
@@ -185,11 +189,10 @@ export default function TradeBias({ activeMarket = "Global Equities" }: { active
                 key={tf}
                 onClick={() => setTimeframe(tf)}
                 className={cn(
-                  "relative flex-1 py-1 text-[8px] uppercase font-bold tracking-widest z-10 transition-colors duration-200 flex items-center justify-center gap-1.5",
-                  isActive ? "text-white" : "text-[#777] hover:text-[#aaa]"
+                  "relative flex-1 py-1 text-[8px] uppercase font-black tracking-widest z-10 transition-colors duration-200 flex items-center justify-center gap-1.5 italic",
+                  isActive ? "text-accent" : "text-white/30 hover:text-white/60"
                 )}
               >
-                {isActive && <div className="w-1.5 h-1.5 rounded-full bg-bullish shadow-[0_0_5px_rgba(74,222,128,0.5)]" />}
                 {tf}
               </button>
             );
@@ -219,10 +222,10 @@ export default function TradeBias({ activeMarket = "Global Equities" }: { active
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={cn(
-                    "flex-1 py-1.5 text-[9px] uppercase font-bold tracking-widest rounded border transition-all text-center",
+                    "flex-1 py-2 text-[9px] font-black uppercase tracking-[0.2em] rounded-none border transition-all text-center italic",
                     activeTab === tab 
-                      ? "bg-surface-elevated text-white border-text-tertiary/50" 
-                      : "bg-surface-sunken/30 text-text-muted border-transparent hover:border-divider"
+                      ? "bg-accent/20 text-accent border-accent/40 shadow-[0_0_15px_rgba(6,182,212,0.1)]" 
+                      : "bg-accent/5 text-accent/40 border-accent/10 hover:border-accent/30 hover:text-accent/60"
                   )}
                 >
                   {tab}
@@ -231,12 +234,16 @@ export default function TradeBias({ activeMarket = "Global Equities" }: { active
             </div>
 
             {/* Active Setup Content */}
-            <div className="flex flex-col bg-surface-sunken/20 border border-divider rounded-lg p-4 relative overflow-hidden">
-              <div className="flex justify-between items-start mb-4">
+            <div className="flex flex-col bg-accent/[0.03] border border-accent/20 rounded-none p-5 relative overflow-hidden">
+              <div className="absolute top-0 right-0 px-2 py-0.5 bg-accent/10 border-b border-l border-accent/20 text-[8px] font-black text-accent/40 tracking-widest uppercase">
+                STRAT_SCENARIO_LNK
+              </div>
+
+              <div className="flex justify-between items-start mb-6">
                 <div className="flex items-center gap-2">
-                  <div className={cn("flex items-center gap-1.5 px-2 py-1 rounded border", getDirBg(currentSetup.setup || currentSetup.direction))}>
-                    <DirIcon dir={currentSetup.setup || currentSetup.direction} className={cn("w-3.5 h-3.5", getDirColor(currentSetup.setup || currentSetup.direction))} />
-                    <span className={cn("text-[9px] uppercase font-extrabold tracking-widest", getDirColor(currentSetup.setup || currentSetup.direction))}>
+                  <div className={cn("flex items-center gap-2 px-3 py-1.5 rounded-none border italic", getDirBg(currentSetup.setup || currentSetup.direction))}>
+                    <DirIcon dir={currentSetup.setup || currentSetup.direction} className={cn("w-4 h-4", getDirColor(currentSetup.setup || currentSetup.direction))} />
+                    <span className={cn("text-[10px] uppercase font-black tracking-[0.2em]", getDirColor(currentSetup.setup || currentSetup.direction))}>
                       {currentSetup.setup || currentSetup.direction || "SETUP"}
                     </span>
                   </div>
@@ -244,24 +251,24 @@ export default function TradeBias({ activeMarket = "Global Equities" }: { active
                 {getConfidenceBadge(currentSetup.confidence)}
               </div>
 
-              <div className="grid grid-cols-3 gap-3 mb-4 border-b border-divider pb-4">
+              <div className="grid grid-cols-3 gap-4 mb-6 border-b border-accent/10 pb-6">
                 <div className="flex flex-col">
-                  <span className="text-[8px] text-text-tertiary uppercase tracking-widest font-bold mb-1">Entry Zone</span>
-                  <span className="text-sm font-extrabold text-white">{currentSetup.entry}</span>
+                  <span className="text-[8px] text-accent/50 uppercase tracking-[0.2em] font-black mb-1.5">ENTRY_ZONE</span>
+                  <span className="text-[15px] font-black text-white font-mono tabular-nums">{currentSetup.entry}</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[8px] text-bearish/70 uppercase tracking-widest font-bold mb-1">Stop Loss</span>
-                  <span className="text-sm font-extrabold text-bearish">{currentSetup.stop_loss}</span>
+                  <span className="text-[8px] text-bearish/50 uppercase tracking-[0.2em] font-black mb-1.5">STOP_LOSS</span>
+                  <span className="text-[15px] font-black text-bearish font-mono tabular-nums">{currentSetup.stop_loss}</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[8px] text-bullish/70 uppercase tracking-widest font-bold mb-1">Take Profit</span>
-                  <span className="text-sm font-extrabold text-bullish">{currentSetup.take_profit}</span>
+                  <span className="text-[8px] text-bullish/50 uppercase tracking-[0.2em] font-black mb-1.5">TAKE_PROFIT</span>
+                  <span className="text-[15px] font-black text-bullish font-mono tabular-nums">{currentSetup.take_profit}</span>
                 </div>
               </div>
 
               <div className="flex flex-col">
-                <span className="text-[8px] text-text-muted uppercase tracking-widest font-bold mb-1.5">Reasoning</span>
-                <p className="text-[11px] text-white/80 leading-relaxed font-medium">
+                <span className="text-[8px] text-accent/50 uppercase tracking-[0.2em] font-black mb-2 italic">ANALYSIS_LOG</span>
+                <p className="text-[12px] text-slate-300 font-mono leading-relaxed pl-3 border-l border-accent/30">
                   {currentSetup.reasoning}
                 </p>
               </div>
@@ -270,27 +277,27 @@ export default function TradeBias({ activeMarket = "Global Equities" }: { active
             {/* Key Levels */}
             {(plan.key_levels?.resistance?.length > 0 || plan.key_levels?.support?.length > 0) && (
               <div className="flex flex-col gap-3">
-                <span className="text-[10px] uppercase font-bold text-text-muted tracking-[0.2em] flex items-center gap-1.5">
-                  <Activity className="w-3.5 h-3.5" /> Key Levels
+                <span className="text-[10px] uppercase font-black text-accent tracking-[0.2em] flex items-center gap-1.5 italic">
+                  <Activity className="w-3.5 h-3.5 animate-pulse-accent" /> SEC_LEVELS_IND
                 </span>
                 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-[8px] text-bearish/70 uppercase tracking-widest font-bold border-b border-divider pb-1">Resistance</span>
+                    <span className="text-[9px] text-bearish/50 uppercase tracking-[0.15em] font-black border-b border-accent/10 pb-1 italic">RESISTANCE</span>
                     {plan.key_levels?.resistance?.slice(0, 3).map((lvl, idx) => (
-                      <span key={idx} className="text-[10px] text-white/90 font-mono bg-surface-sunken/40 px-1.5 py-1 rounded border border-divider/50 truncate" title={lvl}>{lvl}</span>
+                      <span key={idx} className="text-[11px] text-white/90 font-mono bg-accent/5 px-2 py-1.5 border border-accent/10 truncate italic" title={lvl}>{lvl}</span>
                     ))}
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-[8px] text-bullish/70 uppercase tracking-widest font-bold border-b border-divider pb-1">Support</span>
+                    <span className="text-[9px] text-bullish/50 uppercase tracking-[0.15em] font-black border-b border-accent/10 pb-1 italic">SUPPORT</span>
                     {plan.key_levels?.support?.slice(0, 3).map((lvl, idx) => (
-                      <span key={idx} className="text-[10px] text-white/90 font-mono bg-surface-sunken/40 px-1.5 py-1 rounded border border-divider/50 truncate" title={lvl}>{lvl}</span>
+                      <span key={idx} className="text-[11px] text-white/90 font-mono bg-accent/5 px-2 py-1.5 border border-accent/10 truncate italic" title={lvl}>{lvl}</span>
                     ))}
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-[8px] text-text-tertiary uppercase tracking-widest font-bold border-b border-divider pb-1">Liquidity</span>
+                    <span className="text-[9px] text-slate-500 uppercase tracking-[0.15em] font-black border-b border-accent/10 pb-1 italic">LIQUIDITY</span>
                     {plan.key_levels?.liquidity?.slice(0, 3).map((lvl, idx) => (
-                      <span key={idx} className="text-[10px] text-white/90 font-mono bg-surface-sunken/40 px-1.5 py-1 rounded border border-divider/50 truncate" title={lvl}>{lvl}</span>
+                      <span key={idx} className="text-[11px] text-white/90 font-mono bg-accent/5 px-2 py-1.5 border border-accent/10 truncate italic" title={lvl}>{lvl}</span>
                     ))}
                   </div>
                 </div>
@@ -300,6 +307,6 @@ export default function TradeBias({ activeMarket = "Global Equities" }: { active
           </div>
         )}
       </div>
-    </Card>
+    </div>
   );
 }

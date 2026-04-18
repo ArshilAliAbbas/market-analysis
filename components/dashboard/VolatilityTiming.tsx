@@ -56,56 +56,56 @@ export default function VolatilityTiming({ activeMarket = "Global Equities" }: {
   });
 
   return (
-    <Card className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-divider">
-        <h2 className="text-[9px] font-bold uppercase tracking-widest text-text-tertiary flex items-center gap-1">
-          <Clock className="w-3 h-3" /> Economic Calendar
+    <div className="axiom-panel axiom-corner-tl border-accent/20 flex flex-col h-full bg-card/40 overflow-hidden">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-accent/10 bg-accent/5">
+        <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-accent flex items-center gap-1.5 italic">
+          <Clock className="w-3 h-3" /> VOL_TIMING_CAL
         </h2>
-        <span className="text-[8px] font-bold uppercase tracking-widest text-text-tertiary">LIVE</span>
+        <span className="text-[8px] font-black uppercase tracking-widest text-accent/40 italic">SYS_SYNC</span>
       </div>
 
       <div className="flex-1 overflow-y-auto no-scrollbar">
         {isLoading && events.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-6 gap-1.5 text-text-tertiary">
+          <div className="flex flex-col items-center justify-center p-6 gap-1.5 text-accent/40">
             <Loader2 className="w-3 h-3 animate-spin" />
-            <span className="text-[8px] uppercase font-bold tracking-widest">Loading events</span>
+            <span className="text-[8px] uppercase font-black tracking-widest">FETCH_EVENTS</span>
           </div>
         ) : error ? (
            <div className="flex flex-col items-center justify-center p-6 gap-1.5 text-bearish">
             <AlertTriangle className="w-3 h-3" />
-            <span className="text-[8px] uppercase font-bold tracking-widest">Failed</span>
+            <span className="text-[8px] uppercase font-black tracking-widest">ERROR_LOC</span>
           </div>
         ) : marketEvents.length === 0 ? (
-           <div className="flex flex-col items-center justify-center p-6 gap-1.5 text-text-tertiary">
-            <span className="text-[8px] uppercase font-bold tracking-widest">No events upcoming</span>
+           <div className="flex flex-col items-center justify-center p-6 gap-1.5 text-accent/30">
+            <span className="text-[8px] uppercase font-black tracking-widest">CAL_STREAM_EMPTY</span>
           </div>
         ) : (
           marketEvents.map((evt, idx) => {
             const isHigh = evt.impact === "HIGH";
             return (
-              <div key={idx} className="w-full flex border-b border-divider hover:bg-white/[0.01] transition-colors">
-                <div className="w-[40px] flex flex-col items-center justify-center border-r border-divider py-2">
+              <div key={idx} className="w-full flex border-b border-accent/5 hover:bg-accent/5 transition-colors">
+                <div className="w-[40px] flex flex-col items-center justify-center border-r border-accent/10 py-2 bg-accent/[0.02]">
                    {isHigh ? (
-                     <div className="w-1.5 h-1.5 rounded-full bg-bearish/80" />
+                     <div className="w-1.5 h-1.5 rounded-none bg-bearish animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
                    ) : (
-                     <div className="w-1 h-1 rounded-full bg-text-tertiary/40" />
+                     <div className="w-1 h-1 rounded-none bg-accent/40" />
                    )}
-                   <span className={cn("text-[7px] mt-0.5 font-bold uppercase", isHigh ? "text-bearish/80" : "text-text-tertiary")}>{isHigh ? "HIGH" : "MED"}</span>
+                   <span className={cn("text-[7px] mt-1 font-black uppercase tracking-widest", isHigh ? "text-bearish" : "text-accent/60")}>{isHigh ? "CRIT" : "LOW"}</span>
                 </div>
                 
-                <div className="flex-1 py-2 px-2.5 flex flex-col justify-center">
+                <div className="flex-1 py-2 px-3 flex flex-col justify-center">
                   <div className="flex justify-between items-start gap-2 mb-0.5">
-                    <span className="text-[11px] font-bold text-text-primary leading-tight line-clamp-1">{evt.event}</span>
-                    <span className="text-[9px] text-text-tertiary font-mono shrink-0 font-bold">
+                    <span className="text-[11px] font-black text-white leading-tight line-clamp-1 italic">{evt.event}</span>
+                    <span className="text-[10px] text-accent font-mono shrink-0 font-black italic">
                       {formatTime(evt.time)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[8px] font-bold uppercase tracking-wider text-text-tertiary flex items-center gap-0.5">
-                      <MapPin className="w-2.5 h-2.5" /> {evt.country}
+                    <span className="text-[8px] font-black uppercase tracking-widest text-accent/40 flex items-center gap-1.5 italic">
+                      <MapPin className="w-2.5 h-2.5" /> GEO_{evt.country}
                     </span>
                     {(evt.estimate || evt.actual) && (
-                      <span className="text-[9px] text-text-tertiary font-mono">Est: {evt.estimate || "-"}</span>
+                      <span className="text-[9px] text-accent/50 font-mono tracking-tighter">EST: {evt.estimate || "N/A"}</span>
                     )}
                   </div>
                 </div>
@@ -114,6 +114,6 @@ export default function VolatilityTiming({ activeMarket = "Global Equities" }: {
           })
         )}
       </div>
-    </Card>
+    </div>
   );
 }

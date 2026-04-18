@@ -52,15 +52,18 @@ export default function TopBar({ alerts, unreadCount, onMarkAllRead, onClearAll,
   };
 
   return (
-    <header className="flex items-center justify-between bg-black backdrop-blur-md border border-white/[0.06] rounded-lg px-4 py-2 shrink-0 h-12 relative z-40 shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-md bg-[#fce075]/10 flex items-center justify-center border border-[#fce075]/20 shadow-[0_0_10px_rgba(252,224,117,0.1)]">
-            <Command className="w-3 h-3 text-[#fce075]" />
+    <header className="flex items-center justify-between axiom-panel axiom-corner-tl border-accent/20 rounded-none px-4 py-2 shrink-0 h-14 relative z-40 bg-card/80">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 bg-accent/10 flex items-center justify-center border border-accent/30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+            <Command className="w-4 h-4 text-accent animate-pulse-accent" />
           </div>
-          <h1 className="text-sm font-bold tracking-tight text-text-primary">
-            Axiom <span className="text-[#fce075]/80 font-semibold">Terminal</span>
-          </h1>
+          <div className="flex flex-col">
+            <h1 className="text-sm font-bold tracking-[0.15em] text-white uppercase italic">
+              Axiom <span className="text-accent underline decoration-accent/40 decoration-2 underline-offset-4">Terminal</span>
+            </h1>
+            <span className="text-[9px] font-black text-accent/40 tracking-[0.3em] -mt-0.5">V.4.0.2_INTEL</span>
+          </div>
         </div>
         
         <div className="w-px h-4 bg-white/[0.06]" />
@@ -85,9 +88,9 @@ export default function TopBar({ alerts, unreadCount, onMarkAllRead, onClearAll,
             { label: "TYO", val: time.tokyo },
             { label: "SYD", val: time.sydney },
           ].map(({ label, val }) => (
-            <div key={label} className="flex items-center gap-1.5 px-3 first:pl-0">
-              <span className="text-white/25 text-[8px] font-black uppercase tracking-widest">{label}</span>
-              <span className="text-white/80 text-[11px] font-semibold font-mono tabular-nums">{val}</span>
+            <div key={label} className="flex flex-col items-center justify-center px-4 first:pl-0 border-r border-accent/10">
+              <span className="text-accent text-[8px] font-black uppercase tracking-[0.2em] mb-0.5">{label}</span>
+              <span className="text-white text-[12px] font-bold font-mono tabular-nums leading-none">{val}</span>
             </div>
           ))}
         </div>

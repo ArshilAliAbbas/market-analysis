@@ -24,14 +24,23 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col h-screen max-h-screen overflow-hidden bg-black text-text-primary max-w-[2560px] mx-auto w-full font-sans relative">
-      {/* Subtle dark ambient texture if needed, removed glowing orbs for professional look */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CgkJPHBhdGggZD0iMTAwIDBoMjB2MjBIMHoiIGZpbGw9Im5vbmUiLz4KCQk8cGF0aCBkPSJNMCAxOS41aDIwTTE5LjUgMHYtMjAiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAyKSIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjwvc3ZnPg==')] opacity-[0.15]" />
+    <div className="flex flex-col h-screen max-h-screen overflow-hidden bg-background text-text-primary max-w-[2560px] mx-auto w-full font-mono relative">
+      {/* Axiom Terminal Effects */}
+      <div className="axiom-scanlines" />
       
-      <CriticalBanner alert={criticalBanner} onDismiss={dismissBanner} />
+      {/* Subtle digital grid backdrop */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.05),transparent_70%)]" />
+      
+      {/* Critical Alerts - High visual priority */}
+      <div className="fixed top-0 inset-x-0 z-[160] p-3 pointer-events-none">
+        <div className="max-w-[1400px] mx-auto pointer-events-auto">
+          <CriticalBanner alert={criticalBanner} onDismiss={dismissBanner} />
+        </div>
+      </div>
       
       {/* Top Bar */}
-      <div className="relative z-10 px-3 pt-3">
+      <div className="relative z-[150] px-3 pt-3">
         <TopBar 
           alerts={alerts}
           unreadCount={unreadCount}
