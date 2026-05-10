@@ -139,26 +139,26 @@ export function CriticalBanner({ alert, onDismiss }: { alert: SmartAlert | null;
         >
           <div
             onClick={onDismiss}
-            className="flex items-center gap-4 px-5 py-3 bg-bearish/10 border border-bearish/30 rounded-none cursor-crosshair hover:bg-bearish/[0.15] transition-all relative overflow-hidden group"
+            className="flex items-center gap-4 px-5 py-3 bg-white/[0.02] border border-white/5 rounded-2xl cursor-pointer hover:bg-white/[0.05] transition-all relative overflow-hidden group"
           >
             {/* Left accent stripe */}
-            <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-bearish" />
-            <div className="absolute top-0 right-0 px-2 py-0.5 bg-bearish text-[8px] font-black text-white italic tracking-[0.2em]">
+            <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-white/20" />
+            <div className="absolute top-0 right-0 px-2 py-0.5 bg-white/10 text-[8px] font-bold text-white/40 tracking-[0.2em]">
               SYS_ALERT_CRIT
             </div>
 
             <div className="shrink-0">
-              <AlertTriangle className="w-5 h-5 text-bearish animate-pulse" />
+              <AlertTriangle className="w-5 h-5 text-white/40 animate-pulse" />
             </div>
 
             <div className="flex-1 min-w-0 flex items-center gap-4">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-bearish shrink-0 italic underline decoration-bearish/40">
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/60 shrink-0">
                 CRITICAL
               </span>
-              <span className="text-[14px] font-black text-white truncate italic uppercase tracking-tight">
+              <span className="text-[14px] font-bold text-white truncate uppercase tracking-tight italic">
                 {alert.title}
               </span>
-              <span className="text-[12px] text-slate-400 truncate hidden md:inline font-mono">
+              <span className="text-[12px] text-white/40 truncate hidden md:inline font-medium">
                 {alert.explanation}
               </span>
             </div>
@@ -166,12 +166,12 @@ export function CriticalBanner({ alert, onDismiss }: { alert: SmartAlert | null;
             <div className="flex items-center gap-3 shrink-0">
               <div className="flex gap-1.5">
                 {alert.assets.slice(0, 3).map((asset, i) => (
-                  <span key={i} className="text-[9px] uppercase font-black text-white tracking-widest bg-bearish/20 border border-bearish/40 px-2 py-0.5 rounded-none italic">
+                  <span key={i} className="text-[9px] uppercase font-bold text-white/40 tracking-widest bg-white/5 border border-white/10 px-2 py-0.5 rounded-lg italic">
                     {asset}
                   </span>
                 ))}
               </div>
-              <span className="text-[10px] text-bearish/60 font-mono italic">{alert.timestamp}</span>
+              <span className="text-[10px] text-white/20 font-mono">{alert.timestamp}</span>
             </div>
           </div>
         </motion.div>

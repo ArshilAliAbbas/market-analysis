@@ -99,10 +99,10 @@ export default function NewsFeed({ activeMarket = "Global Equities" }: { activeM
   });
 
   return (
-    <div className="axiom-panel axiom-corner-tl border-accent/20 flex flex-col h-full flex-1 bg-card/40">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-accent/10 bg-accent/5">
-        <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-accent flex items-center gap-2">
-          <div className="w-1 h-3 bg-accent animate-pulse-accent" />
+    <div className="axiom-panel flex flex-col h-full flex-1 bg-white/[0.02] border-white/5">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/5">
+        <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 flex items-center gap-2">
+          <div className="w-1 h-3 bg-white/20 animate-pulse" />
           Intelligence Flow
         </h2>
         <div className="flex items-center gap-1.5">
@@ -110,10 +110,10 @@ export default function NewsFeed({ activeMarket = "Global Equities" }: { activeM
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1 rounded-none text-[9px] font-black uppercase tracking-widest transition-all
+              className={`px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all
                 ${filter === f 
-                  ? "bg-accent text-background shadow-[0_0_10px_rgba(6,182,212,0.3)]" 
-                  : "text-accent/40 hover:text-accent hover:bg-accent/10"
+                  ? "bg-white text-black" 
+                  : "text-white/20 hover:text-white/40 hover:bg-white/5"
                 }`}
             >
               {f}
@@ -124,15 +124,15 @@ export default function NewsFeed({ activeMarket = "Global Equities" }: { activeM
 
       <div className="flex-1 overflow-y-auto no-scrollbar">
         {isLoading && news.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full gap-2 text-text-tertiary">
+          <div className="flex flex-col items-center justify-center h-full gap-2 text-white/20">
             <Loader2 className="w-4 h-4 animate-spin" />
             <span className="text-[9px] font-bold uppercase tracking-widest">Compiling intelligence</span>
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center h-full gap-2 text-bearish text-center p-6">
+          <div className="flex flex-col items-center justify-center h-full gap-2 text-bearish/60 text-center p-6">
             <AlertTriangle className="w-4 h-4" />
             <span className="text-[9px] font-bold uppercase tracking-widest">Connection failed</span>
-            <button onClick={fetchNewsParams} className="text-[9px] text-text-tertiary bg-white/[0.03] px-2.5 py-1 rounded uppercase tracking-wider hover:bg-white/[0.06] border border-card-border">Retry</button>
+            <button onClick={fetchNewsParams} className="text-[9px] text-white/40 bg-white/5 px-2.5 py-1 rounded uppercase tracking-wider hover:bg-white/10 border border-white/5">Retry</button>
           </div>
         ) : (
           <AnimatePresence>
@@ -144,45 +144,45 @@ export default function NewsFeed({ activeMarket = "Global Equities" }: { activeM
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15, delay: index * 0.03 }}
                 key={item.id}
-                className="px-5 py-5 border-b border-divider hover:bg-white/[0.015] transition-colors group relative"
+                className="px-5 py-5 border-b border-white/5 hover:bg-white/[0.01] transition-colors group relative"
               >
                 {item.impact === "HIGH" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-bearish" />}
                 
                 <div className="flex gap-4">
                   <div className="w-12 shrink-0 flex flex-col items-center data-value mt-1">
-                    <span className="text-[10px] font-black text-accent/60 italic">{item.timeAgo}</span>
-                    <div className="w-px h-full bg-accent/10 mt-2" />
+                    <span className="text-[10px] font-bold text-white/20 italic">{item.timeAgo}</span>
+                    <div className="w-px h-full bg-white/5 mt-2" />
                   </div>
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-2.5">
-                      {item.impact === "HIGH" && <Badge variant="high">CRITICAL</Badge>}
-                      {item.impact === "MEDIUM" && <Badge variant="medium">ELEVATED</Badge>}
-                      {item.impact === "LOW" && <Badge variant="low">LOW</Badge>}
+                      {item.impact === "HIGH" && <div className="text-[8px] font-bold bg-bearish/10 text-bearish border border-bearish/20 px-1.5 py-0.5 rounded uppercase">CRITICAL</div>}
+                      {item.impact === "MEDIUM" && <div className="text-[8px] font-bold bg-white/10 text-white/60 border border-white/20 px-1.5 py-0.5 rounded uppercase">ELEVATED</div>}
+                      {item.impact === "LOW" && <div className="text-[8px] font-bold bg-white/5 text-white/40 border border-white/10 px-1.5 py-0.5 rounded uppercase">LOW</div>}
                       
                       <div className="flex gap-1 ml-1">
                         {item.assets.map((asset, i) => (
-                          <span key={i} className="text-[9px] bg-accent/5 border border-accent/20 px-1.5 py-0.5 rounded-none text-accent font-black tracking-widest italic opacity-70">
+                          <span key={i} className="text-[9px] bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-white/40 font-bold tracking-widest italic">
                             {asset}
                           </span>
                         ))}
                       </div>
                     </div>
 
-                    <a href={item.url} target="_blank" rel="noreferrer" className="block text-lg font-black tracking-tight text-white mb-2 leading-tight hover:text-accent transition-colors">
+                    <a href={item.url} target="_blank" rel="noreferrer" className="block text-lg font-bold tracking-tight text-white mb-2 leading-tight hover:text-white/60 transition-colors uppercase italic">
                       {item.headline}
                     </a>
-                    <p className="text-[13px] text-slate-400 font-medium leading-relaxed mb-5">{item.summary}</p>
+                    <p className="text-[13px] text-white/40 font-medium leading-relaxed mb-5">{item.summary}</p>
                     
-                    <div className="bg-accent/[0.03] border border-accent/20 rounded-none p-4 text-[12px] relative overflow-hidden group/analysis">
-                      <div className="absolute top-0 right-0 px-2 py-0.5 bg-accent/10 border-b border-l border-accent/20 text-[8px] font-black text-accent/40 tracking-widest">
+                    <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 text-[12px] relative overflow-hidden group/analysis">
+                      <div className="absolute top-0 right-0 px-2 py-0.5 bg-white/5 border-b border-l border-white/10 text-[8px] font-bold text-white/20 tracking-widest">
                         CORE_LOG_PRC
                       </div>
                       <div className="flex gap-3 items-start relative z-10">
-                        <Command className="w-4 h-4 text-accent animate-pulse-accent shrink-0 mt-0.5" />
+                        <Command className="w-4 h-4 text-white/20 shrink-0 mt-0.5" />
                         <div className="flex flex-col gap-1">
-                          <span className="text-accent text-[9px] font-black uppercase tracking-[0.2em] block">Synthea_Intelligence_Node</span>
-                          <p className="text-slate-200 text-[13px] font-mono leading-relaxed">
+                          <span className="text-white/20 text-[9px] font-bold uppercase tracking-[0.2em] block">Intelligence_Node</span>
+                          <p className="text-white/60 text-[13px] font-mono leading-relaxed">
                             {item.explanation || "AI insight is currently syncing and unavailable."}
                           </p>
                         </div>

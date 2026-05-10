@@ -52,17 +52,17 @@ export default function TopBar({ alerts, unreadCount, onMarkAllRead, onClearAll,
   };
 
   return (
-    <header className="flex items-center justify-between axiom-panel axiom-corner-tl border-accent/20 rounded-none px-4 py-2 shrink-0 h-14 relative z-40 bg-card/80">
+    <header className="flex items-center justify-between axiom-panel border-white/5 rounded-none px-4 py-2 shrink-0 h-14 relative z-40 bg-black/80">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 bg-accent/10 flex items-center justify-center border border-accent/30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-            <Command className="w-4 h-4 text-accent animate-pulse-accent" />
+          <div className="w-7 h-7 bg-white/5 flex items-center justify-center border border-white/10">
+            <Command className="w-4 h-4 text-white" />
           </div>
           <div className="flex flex-col">
             <h1 className="text-sm font-bold tracking-[0.15em] text-white uppercase italic">
-              Axiom <span className="text-accent underline decoration-accent/40 decoration-2 underline-offset-4">Terminal</span>
+              Axiom <span className="text-white underline decoration-white/20 decoration-2 underline-offset-4">Terminal</span>
             </h1>
-            <span className="text-[9px] font-black text-accent/40 tracking-[0.3em] -mt-0.5">V.4.0.2_INTEL</span>
+            <span className="text-[9px] font-black text-white/40 tracking-[0.3em] -mt-0.5">V.4.0.2_INTEL</span>
           </div>
         </div>
         

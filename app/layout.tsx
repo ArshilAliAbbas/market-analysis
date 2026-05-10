@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Market Pulse AI — Live Financial Intelligence Dashboard",
+  title: "Axiom Terminal — Institutional Financial Intelligence",
   description:
     "Real-time market data, AI-powered news analysis, economic calendar, and institutional-grade trade planning — all in one professional dashboard.",
   keywords: [

@@ -105,10 +105,10 @@ export default function MarketOverview() {
   const unselectedAssets = MASTER_ASSETS.filter(ma => !watchlist.find(w => w.symbol === ma.symbol));
 
   return (
-    <div className="axiom-panel axiom-corner-tl border-accent/20 flex flex-col h-full relative overflow-hidden bg-card/40">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-accent/10 bg-accent/5">
-        <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-accent flex items-center gap-2">
-          <div className="w-1 h-3 bg-accent animate-pulse-accent" />
+    <div className="axiom-panel border-white/5 flex flex-col h-full relative overflow-hidden bg-white/[0.02]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/5">
+        <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white flex items-center gap-2">
+          <div className="w-1 h-3 bg-white animate-pulse-accent" />
           Market Intelligence
         </h2>
         
@@ -169,11 +169,11 @@ export default function MarketOverview() {
 
               return (
                 <div key={category} className="flex flex-col mb-1.5">
-                  <h3 className="text-[9px] uppercase font-black tracking-[0.3em] px-4 py-2 bg-accent/10 text-accent border-y border-accent/20 sticky top-0 z-10 w-full italic">
+                  <h3 className="text-[9px] uppercase font-black tracking-[0.3em] px-4 py-2 bg-white/5 text-white/40 border-y border-white/5 sticky top-0 z-10 w-full italic">
                     {category} :: TERMINAL_INPUT
                   </h3>
                   
-                  <div className="flex flex-col divide-y divide-accent/5">
+                  <div className="flex flex-col divide-y divide-white/5">
                     {catWatchlist.map((asset) => {
                       const liveData = data.find(d => d.symbol === asset.display || d.symbol === asset.symbol);
                       if (!liveData) return null;
@@ -189,7 +189,7 @@ export default function MarketOverview() {
                       return (
                         <div 
                           key={asset.symbol} 
-                          className="group relative flex items-center px-4 py-3 hover:bg-accent/5 transition-all cursor-crosshair overflow-hidden"
+                          className="group relative flex items-center px-4 py-3 hover:bg-white/5 transition-all cursor-crosshair overflow-hidden"
                         >
                           <button 
                             onClick={(e) => { e.stopPropagation(); removeAsset(asset.symbol); }}

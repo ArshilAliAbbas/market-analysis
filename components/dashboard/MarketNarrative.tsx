@@ -43,15 +43,15 @@ export default function MarketNarrative({ activeMarket = "Global Equities" }: { 
   }, []);
 
   return (
-    <div className="axiom-panel axiom-corner-tl flex flex-col shrink-0 p-4 min-h-[120px] border-accent/20 bg-card/40">
+    <div className="axiom-panel flex flex-col shrink-0 p-4 min-h-[120px] border-white/5 bg-white/[0.02]">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-accent flex items-center gap-2">
-          <Sparkles className="w-3.5 h-3.5 animate-pulse-accent" />
+        <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-white flex items-center gap-2">
+          <Sparkles className="w-3.5 h-3.5 text-white/40" />
           Neural Core Synthesis
         </h2>
-        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-accent/10 border border-accent/20">
-          <div className="w-1.5 h-1.5 rounded-none bg-accent animate-pulse" />
-          <span className="text-[8px] uppercase font-black tracking-widest text-accent italic">ACTIVE_LINK</span>
+        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/10">
+          <div className="w-1.5 h-1.5 rounded-none bg-white/40 animate-pulse" />
+          <span className="text-[8px] uppercase font-black tracking-widest text-white/40 italic">ACTIVE_LINK</span>
         </div>
       </div>
 
@@ -62,7 +62,7 @@ export default function MarketNarrative({ activeMarket = "Global Equities" }: { 
              <span className="text-[9px] uppercase font-bold tracking-widest">Synthesizing macro context...</span>
            </div>
         ) : (
-          <p className="text-slate-300 text-[13px] font-mono leading-relaxed border-l-2 border-accent/30 pl-4 py-1">
+          <p className="text-white/70 text-[13px] font-mono leading-relaxed border-l-2 border-white/20 pl-4 py-1">
             {narrative}
           </p>
         )}

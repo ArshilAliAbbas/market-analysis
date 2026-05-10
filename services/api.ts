@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// Market Pulse AI — Frontend API Service Layer
+// Axiom Terminal — Institutional API Service Layer
 // All calls hit Next.js API routes (/api/*), never external APIs directly
 // ═══════════════════════════════════════════════════════════════
 

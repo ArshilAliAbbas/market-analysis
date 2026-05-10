@@ -26,11 +26,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col h-screen max-h-screen overflow-hidden bg-background text-text-primary max-w-[2560px] mx-auto w-full font-mono relative">
       {/* Axiom Terminal Effects */}
-      <div className="axiom-scanlines" />
-      
-      {/* Subtle digital grid backdrop */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
-      <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.05),transparent_70%)]" />
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.02),transparent_50%)]" />
       
       {/* Critical Alerts - High visual priority */}
       <div className="fixed top-0 inset-x-0 z-[160] p-3 pointer-events-none">
